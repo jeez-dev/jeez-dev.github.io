@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>Cookie Clicker</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🍪</text></svg>">
+</head>
+<body>
+  <div id="game-container">
+    <header id="game-header">
+      <div id="cookie-count">
+        <span id="cookie-amount">0</span>
+        <span class="label">cookies</span>
+      </div>
+      <div id="cps-display">
+        per second: <span id="cps-amount">0</span>
+      </div>
+      <div id="prestige-display" class="hidden">
+        Prestige: <span id="prestige-level">0</span> (<span id="prestige-bonus">0</span>% bonus)
+      </div>
+    </header>
+
+    <main id="game-main">
+      <section id="cookie-area">
+        <div id="cookie-wrapper">
+          <div id="big-cookie" role="button" tabindex="0" aria-label="Click to bake cookie">
+            <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="100" cy="100" r="90" fill="#d2a056" stroke="#8b6914" stroke-width="4"/>
+              <circle cx="65" cy="65" r="10" fill="#6b3e0a" opacity="0.8"/>
+              <circle cx="120" cy="50" r="8" fill="#6b3e0a" opacity="0.7"/>
+              <circle cx="140" cy="100" r="9" fill="#6b3e0a" opacity="0.75"/>
+              <circle cx="90" cy="120" r="11" fill="#6b3e0a" opacity="0.8"/>
+              <circle cx="55" cy="110" r="7" fill="#6b3e0a" opacity="0.7"/>
+              <circle cx="110" cy="150" r="8" fill="#6b3e0a" opacity="0.75"/>
+              <circle cx="70" cy="150" r="6" fill="#6b3e0a" opacity="0.65"/>
+            </svg>
+          </div>
+        </div>
+        <div id="click-power">Click power: <span id="click-power-amount">1</span></div>
+      </section>
+
+      <section id="shop-area">
+        <h2 id="shop-title">Shop</h2>
+        <div id="upgrade-list"></div>
+        <div id="shop-footer">
+          <button id="save-btn" class="btn-secondary">Save</button>
+          <button id="prestige-btn" class="btn-prestige hidden">Prestige Reset</button>
+        </div>
+      </section>
+    </main>
+
+    <div id="ad-slot" class="hidden">
+      <div id="ad-placeholder">Ad Slot</div>
+    </div>
+  </div>
+
+  <div id="floating-numbers"></div>
+
+  <div id="prestige-modal" class="modal hidden">
+    <div class="modal-content">
+      <h2>Prestige Reset</h2>
+      <p>You will reset all cookies and buildings.</p>
+      <p>Prestige level gained: <span id="prestige-gain">0</span></p>
+      <p>New total: <span id="prestige-new-total">0</span></p>
+      <p>CPS bonus: <span id="prestige-new-bonus">0</span>%</p>
+      <div class="modal-buttons">
+        <button id="prestige-confirm" class="btn-prestige">Confirm Reset</button>
+        <button id="prestige-cancel" class="btn-secondary">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="offline-modal" class="modal hidden">
+    <div class="modal-content">
+      <h2>Welcome Back!</h2>
+      <p>You were away for <span id="offline-time">0</span>.</p>
+      <p>You earned <span id="offline-cookies">0</span> cookies while away!</p>
+      <button id="offline-ok" class="btn-secondary">Nice!</button>
+    </div>
+  </div>
+
+  <script src="game.js"></script>
+</body>
+</html>
