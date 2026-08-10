@@ -1,0 +1,51 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    name: Validate site structure
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check game directories have index.html
+        run: |
+          errors=0
+          for dir in 2048 cookie-clicker flappy-bird; do
+            if [ -d "$dir" ]; then
+              if [ ! -f "$dir/index.html" ]; then
+                echo "::error::$dir/ exists but has no index.html"
+                errors=$((errors + 1))
+              else
+                echo "OK: $dir/index.html"
+              fi
+            else
+              echo "::warning::$dir/ directory is missing"
+            fi
+          done
+          if [ ! -f "index.html" ]; then
+            echo "::error::Root index.html is missing"
+            errors=$((errors + 1))
+          fi
+          exit $errors
+      - name: Check HTML is well-formed
+        run: |
+          sudo apt-get update -qq && sudo apt-get install -qq -y tidy > /dev/null 2>&1
+          errors=0
+          for html in index.html 2048/index.html cookie-clicker/index.html flappy-bird/index.html; do
+            if [ -f "$html" ]; then
+              if ! tidy -q -e "$html" 2>/dev/null; then
+                echo "::warning::$html has HTML warnings (tidy)"
+              else
+                echo "OK: $html is well-formed"
+              fi
+            fi
+          done
