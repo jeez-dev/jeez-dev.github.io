@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Chain Reaction — jeez.games</title>
+    <meta name="description" content="Deterministic cascade puzzle. Place sparks, ignite, watch the chain reaction." />
+    <script type="module" crossorigin src="./assets/index-8XXYvfiE.js"></script>
+    <link rel="stylesheet" crossorigin href="./assets/index-DnEWVivP.css">
+  </head>
+  <body>
+    <header>
+      <h1>⛓️ CHAIN <span class="accent">REACTION</span></h1>
+      <div class="header-controls">
+        <select id="boardSelect" aria-label="Board"></select>
+        <button id="newEndlessBtn" class="ghost" title="New procedurally generated board">🎲 Endless</button>
+        <button id="muteBtn" class="ghost" title="Toggle sound">🔊</button>
+      </div>
+    </header>
+
+    <main>
+      <section class="board-wrap">
+        <canvas id="board" width="672" height="504"></canvas>
+        <div id="overlay" class="overlay hidden">
+          <div class="overlay-card">
+            <div id="overlayHeadline" class="headline"></div>
+            <div id="overlayStars" class="stars"></div>
+            <div id="overlayScore" class="score"></div>
+            <div id="overlayProgress" class="progress"></div>
+            <div id="overlayBest" class="best"></div>
+            <div class="overlay-actions">
+              <button id="retryBtn">↺ Edit board</button>
+              <button id="nextBtn" class="primary">Next ➜</button>
+            </div>
+          </div>
+        </div>
+        <div id="toast" class="toast hidden"></div>
+      </section>
+
+      <aside class="panel">
+        <div class="panel-block">
+          <div class="board-name" id="boardName"></div>
+          <div class="objective" id="objectiveText"></div>
+          <div class="hint" id="hintText"></div>
+        </div>
+        <div class="panel-block">
+          <div class="row"><span>Sparks</span><span id="sparkPips" class="pips"></span></div>
+          <div class="row"><span>Score</span><span id="scoreText" class="mono">0</span></div>
+          <div class="row"><span>Best</span><span id="bestText" class="mono">—</span></div>
+          <div class="row"><span>Progress</span><span id="progressText" class="mono">—</span></div>
+        </div>
+        <div class="panel-block controls">
+          <button id="igniteBtn" class="primary big">🔥 IGNITE <kbd>Space</kbd></button>
+          <div class="btn-row">
+            <button id="editBtn" class="ghost" title="Back to editing (R)">✏️ Edit</button>
+            <button id="clearBtn" class="ghost" title="Remove all sparks (C)">✖ Clear</button>
+          </div>
+          <div class="btn-row">
+            <button id="speedBtn" class="ghost" title="Playback speed">⏩ 1×</button>
+            <button id="restartBtn" class="ghost" title="Replay cascade">⟲ Replay</button>
+          </div>
+        </div>
+        <div class="panel-block legend">
+          <div><span class="sw bomb">●</span> Bomb — radial blast</div>
+          <div><span class="sw gear">✳</span> Gear — pulse, rotates</div>
+          <div><span class="sw portal">◎</span> Portal — teleports pulse</div>
+          <div><span class="sw wall">■</span> Wall — blocks everything</div>
+          <div><span class="sw spark">✦</span> Spark — your ignition</div>
+        </div>
+        <div class="panel-block tip">Identical board + sparks ⇒ identical cascade. Replays are exact.</div>
+      </aside>
+    </main>
+
+    <footer>jeez.games prototype · deterministic cascade engine · bests saved locally · <a href="https://github.com" style="display:none">v0.1.0</a></footer>
+  </body>
+</html>
