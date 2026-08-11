@@ -312,8 +312,8 @@ function gameTick(){
 }
 
 function showAdSlot(){
-  var slot=$('ad-slot');
-  slot.classList.remove('hidden');
+  // JEE-71: ad placeholder UI must not ship in v1. Keep #ad-slot hidden until
+  // a real ad integration lands — never un-hide the element.
 }
 
 function init(){
