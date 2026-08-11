@@ -19,6 +19,7 @@ var UPGRADES=[
 var COST_MULT=1.15;
 var PRESTIGE_DIVISOR=1000000;
 var SAVE_KEY='cookieClickerJeez_save';
+var SAVE_VERSION=1;
 var AUTO_SAVE_MS=30000;
 var TICK_MS=50;
 
@@ -74,7 +75,7 @@ function playBuy(){
 
 function formatNum(n){
   if(n<0)return'-'+formatNum(-n);
-  if(n<1000)return Math.floor(n).toString();
+  if(n<1000)return n%1===0?Math.floor(n).toString():n.toFixed(1);
   var suffixes=['','K','M','B','T','Qa','Qi','Sx','Sp','Oc','No','Dc','UDc','DDc','TDc','QaDc','QiDc'];
   var tier=Math.floor(Math.log10(Math.abs(n))/3);
   if(tier>=suffixes.length||tier===0){
@@ -225,7 +226,7 @@ function doPrestige(){
   }
   saveGame();
   updateUI();
-  $('prestige-modal').classList.add('hidden');
+  hidePrestigeModal();
 }
 
 function showPrestigeModal(){
@@ -237,8 +238,13 @@ function showPrestigeModal(){
   $('prestige-modal').classList.remove('hidden');
 }
 
+function hidePrestigeModal(){
+  $('prestige-modal').classList.add('hidden');
+}
+
 function saveGame(){
   state.lastSave=Date.now();
+  state.saveVersion=SAVE_VERSION;
   try{
     localStorage.setItem(SAVE_KEY,JSON.stringify(state));
   }catch(e){}
@@ -250,17 +256,17 @@ function loadGame(){
     if(!raw)return false;
     var saved=JSON.parse(raw);
     if(!saved||typeof saved.cookies!=='number')return false;
-    state.cookies=saved.cookies||0;
-    state.totalCookiesEarned=saved.totalCookiesEarned||0;
-    state.totalCookiesAllTime=saved.totalCookiesAllTime||0;
-    state.prestigeLevel=saved.prestigeLevel||0;
-    state.clickPower=saved.clickPower||1;
-    state.adBoostExpiry=saved.adBoostExpiry||0;
-    state.lastSave=saved.lastSave||Date.now();
-    state.lastTick=saved.lastTick||Date.now();
+    state.cookies=saved.cookies??0;
+    state.totalCookiesEarned=saved.totalCookiesEarned??0;
+    state.totalCookiesAllTime=saved.totalCookiesAllTime??0;
+    state.prestigeLevel=saved.prestigeLevel??0;
+    state.clickPower=saved.clickPower??1;
+    state.adBoostExpiry=saved.adBoostExpiry??0;
+    state.lastSave=saved.lastSave??Date.now();
+    state.lastTick=saved.lastTick??Date.now();
     for(var i=0;i<UPGRADES.length;i++){
       var id=UPGRADES[i].id;
-      state.buildings[id]=saved.buildings?saved.buildings[id]||0:0;
+      state.buildings[id]=saved.buildings?(saved.buildings[id]??0):0;
     }
     return true;
   }catch(e){return false;}
@@ -288,6 +294,7 @@ function calcOfflineProgress(){
   $('offline-time').textContent=timeStr;
   $('offline-cookies').textContent=formatNum(earned);
   $('offline-modal').classList.remove('hidden');
+  state.lastTick=now;
 }
 
 function gameTick(){
@@ -326,7 +333,14 @@ function init(){
   $('save-btn').addEventListener('click',function(){saveGame();});
   $('prestige-btn').addEventListener('click',showPrestigeModal);
   $('prestige-confirm').addEventListener('click',doPrestige);
-  $('prestige-cancel').addEventListener('click',function(){$('prestige-modal').classList.add('hidden');});
+  $('prestige-cancel').addEventListener('click',hidePrestigeModal);
+  var prestigeModal=$('prestige-modal');
+  prestigeModal.addEventListener('click',function(e){
+    if(e.target===prestigeModal)hidePrestigeModal();
+  });
+  document.addEventListener('keydown',function(e){
+    if(e.key==='Escape'&&!prestigeModal.classList.contains('hidden'))hidePrestigeModal();
+  });
   $('offline-ok').addEventListener('click',function(){$('offline-modal').classList.add('hidden');});
 
   setInterval(gameTick,TICK_MS);
