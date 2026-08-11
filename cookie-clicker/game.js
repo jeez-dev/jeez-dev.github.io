@@ -350,6 +350,13 @@ function init(){
   updateUI();
 
   window.addEventListener('beforeunload',saveGame);
+  // JEE-53: mobile browsers (esp. iOS Safari) can skip beforeunload on
+  // backgrounding/tab-kill. pagehide covers tab-close/bfcache; hiding the
+  // document covers app backgrounding.
+  window.addEventListener('pagehide',saveGame);
+  document.addEventListener('visibilitychange',function(){
+    if(document.visibilityState==='hidden')saveGame();
+  });
 }
 
 if(document.readyState==='loading'){
