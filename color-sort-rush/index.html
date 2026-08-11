@@ -11,14 +11,13 @@
 :root{
   --bg:#0f0e17;--surface:#1a1932;--surface2:#232244;--accent:#ff6e6c;--accent2:#7f5af0;
   --green:#2cb67d;--gold:#ffd803;--silver:#a7a9be;--bronze:#e0a526;
-  --text:#fffffe;--text-dim:#94a1b2;--text-dimmer:#5a5e7a;
+  --text:#fffffe;--text-dim:#94a1b2;--text-dimmer:#6b7086;
   --tube-w:50px;--tube-h:130px;--seg-h:30px;--radius:12px;
 }
 @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
 @keyframes pop{0%{transform:scale(.7);opacity:0}60%{transform:scale(1.15)}100%{transform:scale(1);opacity:1}}
 @keyframes slideUp{from{transform:translateY(30px);opacity:0}to{transform:translateY(0);opacity:1}}
-@keyframes glow{0%,100%{box-shadow:0 0 8px var(--accent2)}50%{box-shadow:0 0 20px var(--accent2)}}
 @keyframes pourDown{0%{transform:scaleY(0);opacity:0}30%{transform:scaleY(1);opacity:1}100%{transform:scaleY(1);opacity:1}}
 
 html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);
@@ -79,12 +78,11 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);
 .tube-wrap:hover{transform:translateY(-3px)}
 .tube-wrap.selected{transform:translateY(-14px)}
 .tube-wrap.selected .tube{box-shadow:0 4px 20px rgba(127,90,240,.5),0 0 0 2px var(--accent2)}
-.tube-wrap.hint .tube{animation:glow 1s ease-in-out}
 .tube-wrap.completed .tube{box-shadow:0 0 12px rgba(44,182,125,.5),0 0 0 2px var(--green)}
-.tube{width:var(--tube-w);height:var(--tube-h);border:2.5px solid #3a3a5c;border-top:none;
+.tube{width:var(--tube-w);height:var(--tube-h);border:2.5px solid #4a4a70;border-top:none;
   border-radius:0 0 var(--radius) var(--radius);position:relative;overflow:hidden;
   background:rgba(255,255,255,.03);display:flex;flex-direction:column-reverse;transition:box-shadow .2s}
-.tube-top{width:var(--tube-w);height:5px;border:2.5px solid #3a3a5c;border-bottom:none;
+.tube-top{width:var(--tube-w);height:5px;border:2.5px solid #4a4a70;border-bottom:none;
   border-radius:6px 6px 0 0;margin-top:-1px;background:rgba(255,255,255,.03)}
 .seg{width:100%;height:var(--seg-h);position:relative;transition:height .2s ease}
 .seg::after{content:'';position:absolute;top:0;left:0;right:0;height:50%;
@@ -111,6 +109,7 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);
 
 @media(max-height:640px){:root{--tube-h:100px;--seg-h:24px;--tube-w:42px}}
 @media(max-height:500px){:root{--tube-h:80px;--seg-h:20px;--tube-w:38px}}
+@media(max-width:440px){.tube-area{gap:8px 6px}}
 </style>
 </head>
 <body>
@@ -328,7 +327,20 @@ function pour(from,to){
     S.hist.push({from,to,pf,pt});
     S.moves++;
     render();
+    markNewSegs(to,n);
     if(isSolved(S.tubes))win();
+  }
+}
+
+function markNewSegs(ti,n){
+  const wrap=document.querySelectorAll('#tube-area .tube-wrap')[ti];
+  if(!wrap)return;
+  const segs=wrap.querySelectorAll('.tube .seg');
+  for(let i=segs.length-n;i<segs.length;i++){
+    const el=segs[i];
+    if(!el)continue;
+    el.classList.add('new');
+    el.addEventListener('animationend',()=>el.classList.remove('new'),{once:true});
   }
 }
 
