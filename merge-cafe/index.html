@@ -3,16 +3,36 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>☕</text></svg>" />
-  <meta name="theme-color" content="#2b1d17" />
+  <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
+  <meta name="theme-color" content="#2b1c12" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <link rel="preload" href="./fonts/fredoka-600.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="./fonts/nunito-400.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="./fonts/nunito-700.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="./fonts/nunito-800.woff2" as="font" type="font/woff2" crossorigin />
   <title>Merge Cafe — jeez.games</title>
-  <script type="module" crossorigin src="./assets/index-U2WlLiiR.js"></script>
-  <link rel="stylesheet" crossorigin href="./assets/index-CoR-2vmO.css">
+  <script type="module" crossorigin src="./assets/index-DIIk_twP.js"></script>
+  <link rel="stylesheet" crossorigin href="./assets/index-Bd7qVJ1x.css">
 </head>
 <body>
   <div id="app"></div>
+  <!-- Boot splash: static (no JS) so first paint is branded; main.ts removes it on first frame -->
+  <div id="boot" style="position:fixed;inset:0;z-index:200;background:#2b1c12;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;">
+    <svg width="84" height="84" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <path d="M13 15h14a6 6 0 0 1 6 6c0 8-5 12-10 12s-10-4-10-12a6 6 0 0 1 6-6z" fill="#fff3dd" stroke="#4a3020" stroke-width="2"/>
+      <path d="M31 18c3.6 0 6 2 6 4.6 0 2.9-2.6 4.4-5.5 4.4" fill="none" stroke="#4a3020" stroke-width="2" stroke-linecap="round"/>
+      <path d="M15.5 22.5c2.4 5.6 10.6 5.6 13 0" fill="none" stroke="#d98e32" stroke-width="3.4" stroke-linecap="round"/>
+      <path d="M18 10.5c0-2.4 2.4-2.4 2.4-4.8M24 10.5c0-2.4 2.4-2.4 2.4-4.8" fill="none" stroke="#d9bda0" stroke-width="1.9" stroke-linecap="round"/>
+    </svg>
+    <div style="font-family:'Fredoka','Trebuchet MS',sans-serif;font-size:22px;font-weight:600;color:#ffd9a3;letter-spacing:.02em;">Merge Café</div>
+    <style>@keyframes boot-pulse{0%,100%{opacity:.45}50%{opacity:1}}</style>
+    <div style="display:flex;gap:5px;">
+      <span style="width:7px;height:7px;border-radius:50%;background:#f2b705;animation:boot-pulse 1s ease-in-out .0s infinite"></span>
+      <span style="width:7px;height:7px;border-radius:50%;background:#e2574c;animation:boot-pulse 1s ease-in-out .18s infinite"></span>
+      <span style="width:7px;height:7px;border-radius:50%;background:#58b368;animation:boot-pulse 1s ease-in-out .36s infinite"></span>
+    </div>
+  </div>
 </body>
 </html>
