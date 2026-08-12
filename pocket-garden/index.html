@@ -3,14 +3,28 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no" />
-    <meta name="theme-color" content="#16281b" />
+    <meta name="theme-color" content="#f6efdc" />
     <meta name="description" content="Pocket Garden — a cozy idle farm. Plant seeds, crops grow while you're away, harvest for coins." />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="preload" href="./fonts/fredoka-600.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="./fonts/nunito-800.woff2" as="font" type="font/woff2" crossorigin />
     <title>Pocket Garden — jeez.games</title>
-    <script type="module" crossorigin src="./assets/index-CX7yNc6L.js"></script>
-    <link rel="stylesheet" crossorigin href="./assets/index-Bq4NApws.css">
+    <script type="module" crossorigin src="./assets/index-oDuk7IjZ.js"></script>
+    <link rel="stylesheet" crossorigin href="./assets/index-ARfRUSRe.css">
   </head>
   <body>
+    <div id="boot" aria-hidden="true">
+      <svg class="boot-mark" viewBox="0 0 24 24">
+        <defs><linearGradient id="bm-b" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stop-color="#7cc46f"/><stop offset="1" stop-color="#3e8a4a"/>
+        </linearGradient></defs>
+        <path d="M12 21.5v-9" stroke="url(#bm-b)" stroke-width="2.4" stroke-linecap="round" fill="none"/>
+        <path d="M12 12.5C12 9.3 9.5 7.2 5.9 7.2c0 3.2 2.5 5.3 6.1 5.3z" fill="url(#bm-b)"/>
+        <path d="M12 12.5c0-3.2 2.5-5.3 6.1-5.3 0 3.2-2.5 5.3-6.1 5.3z" fill="url(#bm-b)" opacity=".82"/>
+        <circle cx="12" cy="4.2" r="1.9" fill="#f2b233"/>
+      </svg>
+      <div class="boot-word">Pocket Garden</div>
+    </div>
     <div id="app"></div>
   </body>
 </html>
