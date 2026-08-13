@@ -62,11 +62,122 @@
         position: absolute;
         inset: 0;
       }
+      /* Boot splash — static HTML so first paint is branded, not a blank navy
+         void. Removed by main.ts on the game's first rendered frame. Tokens
+         hardcoded (Neon Rift system): bundled stylesheet isn't loaded yet. */
+      #boot-splash {
+        position: absolute;
+        inset: 0;
+        z-index: 10;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 16px;
+        background: #0b1026;
+        transition: opacity 0.3s ease;
+      }
+      #boot-splash.splash-out {
+        opacity: 0;
+      }
+      #boot-splash .boot-mark {
+        width: 72px;
+        height: 72px;
+        filter: drop-shadow(0 0 18px rgba(69, 224, 255, 0.6));
+        animation: bootBob 2.4s ease-in-out infinite;
+      }
+      @keyframes bootBob {
+        50% {
+          transform: translateY(-7px);
+        }
+      }
+      #boot-splash .boot-title {
+        font-family: 'Fredoka', 'Nunito', system-ui, sans-serif;
+        font-weight: 600;
+        font-size: 28px;
+        letter-spacing: 4px;
+        line-height: 1.02;
+        display: flex;
+        gap: 0.34em;
+        margin: 0;
+      }
+      #boot-splash .boot-title-a {
+        color: #45e0ff;
+        text-shadow: 0 0 26px rgba(69, 224, 255, 0.55);
+      }
+      #boot-splash .boot-title-b {
+        color: #f2f6ff;
+        text-shadow: 0 0 26px rgba(127, 90, 240, 0.6);
+      }
+      #boot-splash .boot-loader {
+        display: flex;
+        gap: 8px;
+        margin-top: 6px;
+      }
+      #boot-splash .boot-loader span {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: #45e0ff;
+        box-shadow: 0 0 10px rgba(69, 224, 255, 0.7);
+        animation: bootWave 1s ease-in-out infinite;
+      }
+      #boot-splash .boot-loader span:nth-child(2) {
+        animation-delay: 0.12s;
+      }
+      #boot-splash .boot-loader span:nth-child(3) {
+        animation-delay: 0.24s;
+      }
+      @keyframes bootWave {
+        0%,
+        100% {
+          transform: translateY(0);
+          opacity: 0.55;
+        }
+        50% {
+          transform: translateY(-6px);
+          opacity: 1;
+        }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        #boot-splash .boot-mark,
+        #boot-splash .boot-loader span {
+          animation: none;
+        }
+      }
     </style>
-    <script type="module" crossorigin src="./assets/index-BYkZOc0p.js"></script>
+    <script type="module" crossorigin src="./assets/index-DDtzc7SI.js"></script>
     <link rel="stylesheet" crossorigin href="./assets/index-BVaQjIMr.css">
   </head>
   <body>
-    <div id="app"></div>
+    <div id="app">
+      <div id="boot-splash" aria-hidden="true">
+        <svg class="boot-mark" viewBox="0 0 64 64" fill="none" aria-hidden="true">
+          <defs>
+            <linearGradient id="lg-wave-boot" x1="0" y1="1" x2="1" y2="0">
+              <stop offset="0" stop-color="#1899c4" />
+              <stop offset="0.55" stop-color="#45e0ff" />
+              <stop offset="1" stop-color="#a5efff" />
+            </linearGradient>
+          </defs>
+          <path
+            d="M12 46 L26 26 L38 44 L52 18"
+            stroke="url(#lg-wave-boot)"
+            stroke-width="7.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+          <path
+            d="M52 18 l-2.6 12.6 M52 18 l-12.4 -1.2"
+            stroke="url(#lg-wave-boot)"
+            stroke-width="5.5"
+            stroke-linecap="round"
+          />
+          <circle cx="12" cy="46" r="3.6" fill="#ff4d6d" />
+        </svg>
+        <p class="boot-title"><span class="boot-title-a">WAVE</span><span class="boot-title-b">DASH</span></p>
+        <div class="boot-loader"><span></span><span></span><span></span></div>
+      </div>
+    </div>
   </body>
 </html>
