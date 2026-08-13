@@ -2,19 +2,45 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
-  <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
-  <meta name="theme-color" content="#000000" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="mobile-web-app-capable" content="yes" />
-  <title>Flappy Bird — jeez.games</title>
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="theme-color" content="#3fa9d0" />
+  <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
+  <!-- Bundled fleet display fonts (relative paths survive subpath deploys). -->
+  <link rel="preload" href="./fonts/fredoka-600.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="./fonts/nunito-700.woff2" as="font" type="font/woff2" crossorigin />
   <style>
+    @font-face {
+      font-family: 'Fredoka';
+      src: url('./fonts/fredoka-600.woff2') format('woff2');
+      font-weight: 600;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'Nunito';
+      src: url('./fonts/nunito-400.woff2') format('woff2');
+      font-weight: 400;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'Nunito';
+      src: url('./fonts/nunito-700.woff2') format('woff2');
+      font-weight: 700;
+      font-style: normal;
+      font-display: swap;
+    }
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    html, body { width: 100%; height: 100%; overflow: hidden; background: #000; }
-    #game-container { width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; }
+    html, body { width: 100%; height: 100%; overflow: hidden; background: #3fa9d0; }
+    body { font-family: 'Nunito', system-ui, sans-serif; -webkit-user-select: none; user-select: none; overscroll-behavior: none; }
+    #game-container { position: fixed; inset: 0; display: flex; justify-content: center; align-items: center; touch-action: none; }
     canvas { display: block; }
   </style>
-  <script type="module" crossorigin src="./assets/index-BLEyrcX4.js"></script>
+  <title>Flappy Bird — jeez.games</title>
+  <script type="module" crossorigin src="./assets/index-BKpYpxFE.js"></script>
 </head>
 <body>
   <div id="game-container"></div>
