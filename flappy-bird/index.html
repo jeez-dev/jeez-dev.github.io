@@ -38,11 +38,96 @@
     body { font-family: 'Nunito', system-ui, sans-serif; -webkit-user-select: none; user-select: none; overscroll-behavior: none; }
     #game-container { position: fixed; inset: 0; display: flex; justify-content: center; align-items: center; touch-action: none; }
     canvas { display: block; }
+    /* Boot splash (JEE-224) — paints before the game bundle executes;
+       removed on the first rendered frame by src/main.js. */
+    #boot {
+      position: fixed;
+      inset: 0;
+      z-index: 20;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 18px;
+      background: #3fa9d0;
+      font-family: 'Fredoka', 'Nunito', system-ui, sans-serif;
+      animation: fb-boot-in 0.25s ease-out;
+    }
+    #boot .boot-bird {
+      width: 72px;
+      height: 72px;
+      filter: drop-shadow(0 0 16px rgba(255, 210, 63, 0.55));
+      animation: fb-bird-bob 1.6s ease-in-out infinite;
+    }
+    #boot .boot-bird .wing {
+      transform-box: fill-box;
+      transform-origin: center;
+      animation: fb-wing-flap 0.55s ease-in-out infinite alternate;
+    }
+    #boot .boot-title {
+      font-size: 30px;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      color: #fffbe8;
+      text-shadow: 0 0 22px rgba(255, 210, 63, 0.55), 0 2px 6px rgba(12, 60, 88, 0.35);
+    }
+    #boot .boot-dots {
+      display: flex;
+      gap: 8px;
+    }
+    #boot .boot-dots span {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #ffd23f;
+      animation: fb-boot-dot 1s ease-in-out infinite;
+    }
+    #boot .boot-dots span:nth-child(2) {
+      animation-delay: 0.15s;
+      background: #ffffff;
+    }
+    #boot .boot-dots span:nth-child(3) {
+      animation-delay: 0.3s;
+      background: #f97316;
+    }
+    @keyframes fb-boot-dot {
+      0%, 100% { transform: scale(0.6); opacity: 0.4; }
+      50% { transform: scale(1); opacity: 1; }
+    }
+    @keyframes fb-boot-in {
+      from { opacity: 0; }
+    }
+    @keyframes fb-bird-bob {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-4px); }
+    }
+    @keyframes fb-wing-flap {
+      from { transform: rotate(10deg); }
+      to { transform: rotate(-22deg); }
+    }
   </style>
   <title>Flappy Bird — jeez.games</title>
-  <script type="module" crossorigin src="./assets/index-Bcz6ttey.js"></script>
+  <script type="module" crossorigin src="./assets/index-Df1JhSeb.js"></script>
 </head>
 <body>
+  <div id="boot" aria-hidden="true">
+    <svg class="boot-bird" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
+      <!-- tail -->
+      <path fill="#f59e0b" d="M11.5 29.5 L5 32.5 L12.2 33.9 Z" />
+      <!-- body -->
+      <ellipse cx="23" cy="26" rx="13" ry="11" fill="#ffd23f" />
+      <!-- flapping wing -->
+      <ellipse class="wing" cx="19.5" cy="29" rx="5.5" ry="4" fill="#ffffff" opacity="0.9" />
+      <!-- beak -->
+      <path fill="#f97316" d="M33.5 24.2 L44.5 26.4 L33.5 28.6 Q31.8 26.4 33.5 24.2 Z" />
+      <!-- eye -->
+      <circle cx="29.5" cy="20.5" r="4" fill="#ffffff" />
+      <circle cx="31" cy="20.5" r="1.9" fill="#233148" />
+      <circle cx="31.6" cy="19.9" r="0.7" fill="#ffffff" />
+    </svg>
+    <div class="boot-title">Flappy Bird</div>
+    <div class="boot-dots"><span></span><span></span><span></span></div>
+  </div>
   <div id="game-container"></div>
 </body>
 </html>
