@@ -2,16 +2,90 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
   <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
-  <meta name="theme-color" content="#000000" />
+  <meta name="theme-color" content="#9ed7f5" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="mobile-web-app-capable" content="yes" />
   <title>Crossy Road — jeez.games</title>
   <style>
+    @font-face {
+      font-family: 'Fredoka';
+      src: url('fonts/fredoka-600.woff2') format('woff2');
+      font-weight: 600;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'Nunito';
+      src: url('fonts/nunito-700.woff2') format('woff2');
+      font-weight: 700;
+      font-display: swap;
+    }
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    html, body { width: 100%; height: 100%; overflow: hidden; background: #000; }
-    #game-container { width: 100%; height: 100%; }
+    html, body { width: 100%; height: 100%; overflow: hidden; background: #9ed7f5; }
+    body { font-family: 'Nunito', 'Fredoka', system-ui, sans-serif; -webkit-user-select: none; user-select: none; }
+    #game-container { position: fixed; inset: 0; touch-action: none; }
+    #game-container canvas { width: 100% !important; height: 100% !important; display: block; }
+
+    /* ---------- HUD ---------- */
+    #hud {
+      position: fixed; top: max(14px, env(safe-area-inset-top)); left: 18px;
+      display: none; z-index: 20; pointer-events: none;
+      text-align: left;
+    }
+    #hud.active { display: block; }
+    #hud-score {
+      font-family: 'Fredoka', system-ui, sans-serif;
+      font-size: 44px; font-weight: 600; color: #fff; line-height: 1;
+      text-shadow: 0 2px 0 rgba(0,0,0,0.18), 0 0 10px rgba(0,0,0,0.12);
+    }
+    #hud-best {
+      margin-top: 4px; font-size: 14px; font-weight: 700; color: #fff;
+      opacity: 0.9; text-shadow: 0 1px 0 rgba(0,0,0,0.2);
+      letter-spacing: 0.08em;
+    }
+
+    /* ---------- overlay screens ---------- */
+    .screen {
+      position: fixed; inset: 0; z-index: 30;
+      display: none; flex-direction: column; align-items: center; justify-content: center;
+      text-align: center; padding: 24px;
+    }
+    .screen.active { display: flex; }
+    .screen .title {
+      font-family: 'Fredoka', system-ui, sans-serif;
+      font-weight: 600; letter-spacing: 0.04em; color: #fff;
+      font-size: clamp(38px, 11vw, 68px); line-height: 1.05;
+      text-shadow: 0 3px 0 rgba(0,0,0,0.16), 0 6px 24px rgba(0,0,0,0.18);
+    }
+    .screen .sub {
+      margin-top: 6px; color: #fff; opacity: 0.85; font-size: 16px; letter-spacing: 0.12em;
+      text-shadow: 0 1px 0 rgba(0,0,0,0.2);
+    }
+    .cta {
+      margin-top: 42px;
+      font-family: 'Fredoka', system-ui, sans-serif;
+      color: #ffd93b; font-size: clamp(20px, 6vw, 30px); letter-spacing: 0.1em;
+      text-shadow: 0 2px 0 rgba(0,0,0,0.25);
+      animation: cta-pulse 0.9s ease-in-out infinite;
+    }
+    @keyframes cta-pulse { 50% { opacity: 0.45; } }
+    .best { margin-top: 26px; color: #fff; opacity: 0.9; font-size: 16px; letter-spacing: 0.08em;
+      text-shadow: 0 1px 0 rgba(0,0,0,0.2); }
+
+    #screen-menu { background: linear-gradient(180deg, rgba(122,188,255,0.0) 30%, rgba(94,164,224,0.35) 100%); }
+
+    #screen-over { background: rgba(20, 24, 32, 0.58); backdrop-filter: blur(1px); }
+    #screen-over .title { color: #ff5f52; }
+    #over-score {
+      margin-top: 6px; font-family: 'Fredoka', system-ui, sans-serif;
+      font-size: clamp(56px, 18vw, 96px); color: #fff; line-height: 1.1;
+      text-shadow: 0 3px 0 rgba(0,0,0,0.2);
+    }
+    #over-tag { margin-top: 2px; font-size: 17px; letter-spacing: 0.14em; color: #dfe7ee; }
+    #over-tag.newbest { color: #ffd93b; }
+    #over-best { margin-top: 14px; color: #aeb9c2; font-size: 15px; letter-spacing: 0.1em; }
+
     #ad-banner-bottom {
       position: fixed; bottom: 0; left: 50%; transform: translateX(-50%);
       width: 320px; height: 50px; background: #222; color: #888;
@@ -21,10 +95,27 @@
     }
     #ad-banner-bottom.hidden { display: none; }
   </style>
-  <script type="module" crossorigin src="./assets/index-BI8lI_Vv.js"></script>
+  <script type="module" crossorigin src="./assets/index-Baay-CFL.js"></script>
 </head>
 <body>
   <div id="game-container"></div>
+  <div id="hud">
+    <div id="hud-score">0</div>
+    <div id="hud-best"></div>
+  </div>
+  <div id="screen-menu" class="screen">
+    <h1 class="title">CROSSY ROAD</h1>
+    <p class="sub">by jeez.games</p>
+    <p class="cta">TAP TO START</p>
+    <p id="menu-best" class="best"></p>
+  </div>
+  <div id="screen-over" class="screen">
+    <h2 class="title">GAME OVER</h2>
+    <p id="over-score">0</p>
+    <p id="over-tag"></p>
+    <p id="over-best"></p>
+    <p class="cta">TAP TO RETRY</p>
+  </div>
   <!-- JEE-71: ad placeholder hidden for v1 until real ad integration lands -->
   <div id="ad-banner-bottom" class="hidden" style="display:none !important">Ad Banner Placeholder</div>
 </body>
