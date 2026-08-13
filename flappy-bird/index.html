@@ -43,7 +43,9 @@
     #boot {
       position: fixed;
       inset: 0;
-      z-index: 20;
+      /* above the overlay screens (z 30) for its short lifetime; removed on
+         the first rendered frame by src/main.js */
+      z-index: 40;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -105,9 +107,114 @@
       from { transform: rotate(10deg); }
       to { transform: rotate(-22deg); }
     }
+
+    /* ---------- overlay screens (JEE-237, Crossy Road pattern) ----------
+       Pure visual layer over the canvas: pointer-events stay OFF so taps fall
+       straight through to the Phaser canvas input (run/retry). */
+    .screen {
+      position: fixed;
+      inset: 0;
+      z-index: 30;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 24px;
+      pointer-events: none;
+    }
+    .screen.active { display: flex; }
+    .screen .title {
+      font-family: 'Fredoka', 'Nunito', system-ui, sans-serif;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      color: #ffffff;
+      font-size: clamp(38px, 11vw, 68px);
+      line-height: 1.05;
+      text-shadow: 0 3px 0 rgba(23, 68, 84, 0.45), 0 6px 24px rgba(12, 60, 88, 0.35);
+    }
+    .screen .sub {
+      margin-top: 6px;
+      color: #fffbe8;
+      opacity: 0.85;
+      font-weight: 700;
+      font-size: 16px;
+      letter-spacing: 0.12em;
+      text-shadow: 0 1px 0 rgba(23, 68, 84, 0.35);
+    }
+    .cta {
+      margin-top: 42px;
+      font-family: 'Fredoka', 'Nunito', system-ui, sans-serif;
+      color: #ffd23f;
+      font-size: clamp(20px, 6vw, 30px);
+      letter-spacing: 0.1em;
+      text-shadow: 0 2px 0 rgba(23, 68, 84, 0.5), 0 0 18px rgba(255, 210, 63, 0.35);
+      animation: cta-pulse 0.9s ease-in-out infinite;
+    }
+    @keyframes cta-pulse { 50% { opacity: 0.45; } }
+    .best {
+      margin-top: 26px;
+      color: #fffbe8;
+      opacity: 0.9;
+      font-weight: 700;
+      font-size: 16px;
+      letter-spacing: 0.08em;
+      text-shadow: 0 1px 0 rgba(23, 68, 84, 0.35);
+    }
+
+    #screen-menu {
+      background: linear-gradient(180deg, rgba(63, 169, 208, 0) 22%, rgba(23, 104, 138, 0.35) 100%);
+    }
+    #screen-menu .menu-bird {
+      width: 84px;
+      height: 84px;
+      margin-bottom: 14px;
+      filter: drop-shadow(0 0 16px rgba(255, 210, 63, 0.55));
+      animation: fb-bird-bob 1.6s ease-in-out infinite;
+    }
+    #screen-menu .menu-bird .wing {
+      transform-box: fill-box;
+      transform-origin: center;
+      animation: fb-wing-flap 0.55s ease-in-out infinite alternate;
+    }
+
+    #screen-over {
+      background: rgba(16, 51, 63, 0.55);
+      backdrop-filter: blur(1px);
+    }
+    #screen-over .title { color: #ff6b4a; }
+    #over-score {
+      margin-top: 4px;
+      font-family: 'Fredoka', 'Nunito', system-ui, sans-serif;
+      font-weight: 600;
+      font-size: clamp(56px, 18vw, 96px);
+      color: #ffffff;
+      line-height: 1.1;
+      text-shadow: 0 3px 0 rgba(23, 68, 84, 0.5);
+    }
+    #over-tag {
+      margin-top: 2px;
+      font-weight: 700;
+      font-size: 17px;
+      letter-spacing: 0.14em;
+      color: #dff2f7;
+      text-shadow: 0 1px 0 rgba(23, 68, 84, 0.35);
+    }
+    #over-tag.newbest {
+      color: #ffd23f;
+      animation: cta-pulse 0.9s ease-in-out infinite;
+    }
+    #over-best {
+      margin-top: 16px;
+      color: #b8d8e2;
+      font-weight: 700;
+      font-size: 15px;
+      letter-spacing: 0.1em;
+      text-shadow: 0 1px 0 rgba(23, 68, 84, 0.35);
+    }
   </style>
   <title>Flappy Bird — jeez.games</title>
-  <script type="module" crossorigin src="./assets/index-Df1JhSeb.js"></script>
+  <script type="module" crossorigin src="./assets/index-CJLCiPh4.js"></script>
 </head>
 <body>
   <div id="boot" aria-hidden="true">
@@ -129,5 +236,34 @@
     <div class="boot-dots"><span></span><span></span><span></span></div>
   </div>
   <div id="game-container"></div>
+  <!-- Overlay screens (JEE-237) — visual chrome only (pointer-events: none);
+       Phaser scene code toggles .active via src/ui/screens.js. -->
+  <div id="screen-menu" class="screen" aria-hidden="true">
+    <svg class="menu-bird" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
+      <!-- tail -->
+      <path fill="#f59e0b" d="M11.5 29.5 L5 32.5 L12.2 33.9 Z" />
+      <!-- body -->
+      <ellipse cx="23" cy="26" rx="13" ry="11" fill="#ffd23f" />
+      <!-- flapping wing -->
+      <ellipse class="wing" cx="19.5" cy="29" rx="5.5" ry="4" fill="#ffffff" opacity="0.9" />
+      <!-- beak -->
+      <path fill="#f97316" d="M33.5 24.2 L44.5 26.4 L33.5 28.6 Q31.8 26.4 33.5 24.2 Z" />
+      <!-- eye -->
+      <circle cx="29.5" cy="20.5" r="4" fill="#ffffff" />
+      <circle cx="31" cy="20.5" r="1.9" fill="#233148" />
+      <circle cx="31.6" cy="19.9" r="0.7" fill="#ffffff" />
+    </svg>
+    <h1 class="title">FLAPPY BIRD</h1>
+    <p class="sub">by jeez.games</p>
+    <p class="cta">TAP TO START</p>
+    <p id="menu-best" class="best"></p>
+  </div>
+  <div id="screen-over" class="screen" aria-hidden="true">
+    <h2 class="title">GAME OVER</h2>
+    <p id="over-score">0</p>
+    <p id="over-tag"></p>
+    <p id="over-best"></p>
+    <p class="cta">TAP TO RETRY</p>
+  </div>
 </body>
 </html>
