@@ -1,88 +1,259 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
-  <meta name="theme-color" content="#1a1a2e">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
+  <meta name="theme-color" content="#241610" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="mobile-web-app-capable" content="yes" />
   <title>Cookie Clicker — jeez.games</title>
-  <link rel="stylesheet" href="style.css">
+  <style>
+    @font-face {
+      font-family: 'Fredoka';
+      src: url('fonts/fredoka-600.woff2') format('woff2');
+      font-weight: 600;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'Nunito';
+      src: url('fonts/nunito-700.woff2') format('woff2');
+      font-weight: 700;
+      font-display: swap;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body { width: 100%; height: 100%; overflow: hidden; background: #241610; }
+    body {
+      font-family: 'Nunito', 'Fredoka', system-ui, sans-serif;
+      color: #ffe9c9;
+      -webkit-user-select: none; user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .hidden { display: none !important; }
+
+    #app { display: flex; flex-direction: column; height: 100%; }
+
+    /* ---------- header HUD ---------- */
+    #hud {
+      padding: calc(8px + env(safe-area-inset-top)) 16px 8px;
+      display: flex; align-items: center; gap: 12px;
+      background: linear-gradient(180deg, rgba(62,36,18,0.92), rgba(36,22,16,0.85));
+      backdrop-filter: blur(6px);
+      border-bottom: 1px solid rgba(255,196,107,0.18);
+      z-index: 5;
+    }
+    #hud-logo { font-size: 26px; line-height: 1; filter: drop-shadow(0 2px 3px rgba(0,0,0,0.4)); }
+    #hud-main { flex: 1; min-width: 0; }
+    #hud-cookies {
+      font-family: 'Fredoka', system-ui, sans-serif;
+      font-size: clamp(24px, 7vw, 34px); font-weight: 600; line-height: 1.05;
+      color: #ffd98f;
+      text-shadow: 0 2px 0 rgba(90,50,10,0.55), 0 0 18px rgba(255,170,60,0.25);
+      font-variant-numeric: tabular-nums;
+      overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    }
+    #hud-sub { display: flex; gap: 10px; align-items: center; margin-top: 1px; font-size: 12px; color: #d8b489; font-variant-numeric: tabular-nums; }
+    .hud-chip {
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 4px 9px; border-radius: 999px;
+      background: rgba(255,196,107,0.1); border: 1px solid rgba(255,196,107,0.3);
+      font-size: 12px; color: #ffd98f; white-space: nowrap;
+    }
+    #prestige-chip { color: #e9c0ff; background: rgba(180,110,255,0.12); border-color: rgba(190,120,255,0.35); }
+    #boost-chip { color: #b0ffc9; background: rgba(80,220,140,0.12); border-color: rgba(90,230,150,0.35); }
+
+    /* ---------- layout ---------- */
+    #main { flex: 1; display: flex; flex-direction: column; min-height: 0; }
+    #stage-wrap { position: relative; flex: 1; min-height: 240px; }
+    #stage { position: absolute; inset: 0; outline: none; cursor: pointer; }
+    #stage:focus-visible { box-shadow: inset 0 0 0 2px rgba(255,196,107,0.6); }
+    #per-tap-badge {
+      position: absolute; left: 50%; bottom: max(10px, env(safe-area-inset-bottom));
+      transform: translateX(-50%);
+      padding: 6px 14px; border-radius: 999px;
+      background: rgba(30,18,10,0.72); border: 1px solid rgba(255,196,107,0.35);
+      color: #ffd98f; font-size: 13px; letter-spacing: 0.02em;
+      pointer-events: none; backdrop-filter: blur(4px);
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* ---------- shop ---------- */
+    #shop {
+      flex: 0 0 auto;
+      height: min(42vh, 340px);
+      display: flex; flex-direction: column;
+      background: linear-gradient(180deg, rgba(48,28,15,0.92), rgba(30,18,11,0.96));
+      border-top: 1px solid rgba(255,196,107,0.22);
+      backdrop-filter: blur(8px);
+      z-index: 4;
+    }
+    #shop-head {
+      padding: 9px 14px 7px; display: flex; align-items: baseline; gap: 8px;
+      border-bottom: 1px solid rgba(255,196,107,0.14);
+    }
+    #shop-head h2 {
+      font-family: 'Fredoka', system-ui, sans-serif; font-weight: 600;
+      font-size: 15px; letter-spacing: 0.06em; color: #ffd98f;
+    }
+    #shop-head .hint { font-size: 11px; color: #b08d64; }
+    #shop-list { flex: 1; overflow-y: auto; padding: 8px 10px; display: flex; flex-direction: column; gap: 7px; }
+    #shop-list::-webkit-scrollbar { width: 5px; }
+    #shop-list::-webkit-scrollbar-thumb { background: rgba(255,196,107,0.25); border-radius: 3px; }
+
+    .card {
+      display: flex; align-items: center; gap: 11px; width: 100%;
+      min-height: 56px; padding: 8px 12px;
+      border-radius: 13px; border: 1px solid rgba(255,196,107,0.16);
+      background: rgba(70,42,20,0.5);
+      color: inherit; font: inherit; text-align: left; cursor: pointer;
+      transition: background 0.15s, border-color 0.15s, box-shadow 0.15s, opacity 0.15s;
+      touch-action: manipulation;
+    }
+    .card:active { transform: scale(0.985); }
+    .card.affordable {
+      border-color: rgba(255,196,107,0.75);
+      background: rgba(94,56,24,0.62);
+      box-shadow: 0 0 12px rgba(255,170,60,0.18), inset 0 0 18px rgba(255,170,60,0.06);
+    }
+    .card.unaffordable { opacity: 0.55; cursor: default; }
+    .card-icon { font-size: 24px; width: 34px; text-align: center; flex-shrink: 0; filter: drop-shadow(0 2px 2px rgba(0,0,0,0.35)); }
+    .card-body { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 1px; }
+    .card-top { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+    .card-name { font-family: 'Fredoka', system-ui, sans-serif; font-weight: 600; font-size: 14px; color: #ffe9c9; }
+    .card-owned { font-size: 12px; color: #e9c0ff; font-weight: 700; font-variant-numeric: tabular-nums; }
+    .card-cps { font-size: 11.5px; color: #c9a273; }
+    .card-flavor { color: #9b7a56; font-style: italic; }
+    .card-cost { display: inline-flex; align-items: center; gap: 5px; margin-top: 2px; font-size: 13px; font-weight: 700; color: #ffd98f; font-variant-numeric: tabular-nums; }
+    .card.unaffordable .card-cost { color: #cf9d8a; }
+    .cost-cookie { font-size: 11px; }
+
+    #shop-foot {
+      display: flex; gap: 8px; padding: 8px 12px calc(10px + env(safe-area-inset-bottom));
+      border-top: 1px solid rgba(255,196,107,0.14);
+    }
+    .btn {
+      flex: 1; min-height: 40px; padding: 8px 14px; border-radius: 11px;
+      border: 1px solid rgba(255,196,107,0.35);
+      background: rgba(70,42,20,0.65); color: #ffe9c9;
+      font-family: 'Fredoka', system-ui, sans-serif; font-weight: 600; font-size: 13.5px; letter-spacing: 0.04em;
+      cursor: pointer; transition: background 0.15s, border-color 0.15s;
+    }
+    .btn:hover { background: rgba(94,56,24,0.75); }
+    .btn:focus-visible { outline: 2px solid #ffc46b; outline-offset: 1px; }
+    #prestige-btn { border-color: rgba(190,120,255,0.6); color: #eed3ff; background: rgba(88,48,120,0.35); }
+    #prestige-btn:hover { background: rgba(110,60,150,0.45); }
+
+    /* ---------- floaters + flash ---------- */
+    #floaters { position: fixed; inset: 0; pointer-events: none; z-index: 60; overflow: hidden; }
+    .floater {
+      position: absolute; transform: translate(-50%, -50%);
+      font-family: 'Fredoka', system-ui, sans-serif; font-weight: 600; font-size: 21px;
+      color: #ffe08a; text-shadow: 0 2px 0 rgba(90,50,10,0.6), 0 0 12px rgba(255,170,60,0.35);
+      animation: floatUp 0.95s ease-out forwards;
+    }
+    @keyframes floatUp {
+      0% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+      100% { opacity: 0; transform: translate(-50%, calc(-50% - 84px)) scale(1.25); }
+    }
+    #flash { position: fixed; inset: 0; pointer-events: none; z-index: 70; opacity: 0; background: radial-gradient(circle at 50% 42%, rgba(255,214,140,0.9), rgba(255,150,40,0.25) 45%, transparent 75%); }
+    #flash.flash-on { animation: goldFlash 0.8s ease-out forwards; }
+    @keyframes goldFlash { 0% { opacity: 0; } 18% { opacity: 0.95; } 100% { opacity: 0; } }
+
+    /* ---------- modals ---------- */
+    .modal { position: fixed; inset: 0; z-index: 80; display: flex; align-items: center; justify-content: center; background: rgba(10,5,2,0.72); backdrop-filter: blur(3px); }
+    .modal-card {
+      width: min(92vw, 380px); padding: 22px 20px 18px; text-align: center;
+      border-radius: 18px; border: 1px solid rgba(255,196,107,0.3);
+      background: linear-gradient(180deg, #35200f, #241610);
+      box-shadow: 0 18px 50px rgba(0,0,0,0.5);
+    }
+    .modal-card h2 { font-family: 'Fredoka', system-ui, sans-serif; font-weight: 600; color: #ffd98f; font-size: 21px; margin-bottom: 10px; }
+    .modal-card p { font-size: 13.5px; color: #d8b489; margin: 6px 0; }
+    .modal-card strong { color: #ffe9c9; font-variant-numeric: tabular-nums; }
+    .modal-btns { display: flex; gap: 9px; margin-top: 16px; }
+
+    #ad-banner-bottom {
+      position: fixed; bottom: 0; left: 50%; transform: translateX(-50%);
+      width: 320px; height: 50px; background: #222; color: #888;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 12px; z-index: 100; pointer-events: none;
+    }
+
+    /* ---------- desktop ---------- */
+    @media (min-width: 720px) {
+      #main { flex-direction: row; }
+      #stage-wrap { flex: 1; min-height: 0; }
+      #shop { height: auto; width: 352px; border-top: none; border-left: 1px solid rgba(255,196,107,0.22); }
+      #shop-head .hint { display: inline; }
+    }
+    @media (min-width: 720px) and (max-height: 500px) {
+      #per-tap-badge { bottom: 8px; }
+    }
+  </style>
+  <script type="module" crossorigin src="./assets/index-DUMJIQsU.js"></script>
 </head>
 <body>
-  <div id="game-container">
-    <header id="game-header">
-      <div id="cookie-count">
-        <span id="cookie-amount">0</span>
-        <span class="label">cookies</span>
+  <div id="app">
+    <header id="hud">
+      <div id="hud-logo" aria-hidden="true">🍪</div>
+      <div id="hud-main">
+        <div id="hud-cookies">0</div>
+        <div id="hud-sub"><span id="hud-cps">0/s</span><span class="hint-label">cookies</span></div>
       </div>
-      <div id="cps-display">
-        per second: <span id="cps-amount">0</span>
-      </div>
-      <div id="prestige-display" class="hidden">
-        Prestige: <span id="prestige-level">0</span> (<span id="prestige-bonus">0</span>% bonus)
-      </div>
+      <span id="boost-chip" class="hud-chip hidden">⚡ <span id="boost-mult">2×</span> boost</span>
+      <span id="prestige-chip" class="hud-chip hidden">⭐ Prestige <span id="prestige-level">0</span></span>
     </header>
 
-    <main id="game-main">
-      <section id="cookie-area">
-        <div id="cookie-wrapper">
-          <div id="big-cookie" role="button" tabindex="0" aria-label="Click to bake cookie">
-            <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-              <circle cx="100" cy="100" r="90" fill="#d2a056" stroke="#8b6914" stroke-width="4"/>
-              <circle cx="65" cy="65" r="10" fill="#6b3e0a" opacity="0.8"/>
-              <circle cx="120" cy="50" r="8" fill="#6b3e0a" opacity="0.7"/>
-              <circle cx="140" cy="100" r="9" fill="#6b3e0a" opacity="0.75"/>
-              <circle cx="90" cy="120" r="11" fill="#6b3e0a" opacity="0.8"/>
-              <circle cx="55" cy="110" r="7" fill="#6b3e0a" opacity="0.7"/>
-              <circle cx="110" cy="150" r="8" fill="#6b3e0a" opacity="0.75"/>
-              <circle cx="70" cy="150" r="6" fill="#6b3e0a" opacity="0.65"/>
-            </svg>
-          </div>
-        </div>
-        <div id="click-power">Click power: <span id="click-power-amount">1</span></div>
+    <main id="main">
+      <section id="stage-wrap">
+        <div id="stage" role="button" tabindex="0" aria-label="Tap the cookie to bake"></div>
+        <div id="per-tap-badge">👆 <span id="per-tap">+1</span> per tap</div>
       </section>
 
-      <section id="shop-area">
-        <h2 id="shop-title">Shop</h2>
-        <div id="upgrade-list"></div>
-        <div id="shop-footer">
-          <button id="save-btn" class="btn-secondary">Save</button>
-          <button id="prestige-btn" class="btn-prestige hidden">Prestige Reset</button>
+      <aside id="shop" aria-label="Bakery upgrades">
+        <div id="shop-head">
+          <h2>BAKERY UPGRADES</h2>
+          <span class="hint">tap a card to hire</span>
         </div>
-      </section>
+        <div id="shop-list"></div>
+        <div id="shop-foot">
+          <button id="save-btn" class="btn">💾 Save</button>
+          <button id="prestige-btn" class="btn hidden">⭐ Prestige Reset</button>
+        </div>
+      </aside>
     </main>
-
-    <!-- JEE-71: ad placeholder hidden for v1 until real ad integration lands -->
-    <div id="ad-slot" class="hidden" style="display:none !important">
-      <div id="ad-placeholder">Ad Slot</div>
-    </div>
   </div>
 
-  <div id="floating-numbers"></div>
+  <div id="floaters"></div>
+  <div id="flash"></div>
 
-  <div id="prestige-modal" class="modal hidden">
-    <div class="modal-content">
-      <h2>Prestige Reset</h2>
-      <p>You will reset all cookies and buildings.</p>
-      <p>Prestige level gained: <span id="prestige-gain">0</span></p>
-      <p>New total: <span id="prestige-new-total">0</span></p>
-      <p>CPS bonus: <span id="prestige-new-bonus">0</span>%</p>
-      <div class="modal-buttons">
-        <button id="prestige-confirm" class="btn-prestige">Confirm Reset</button>
-        <button id="prestige-cancel" class="btn-secondary">Cancel</button>
+  <div id="prestige-modal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="prestige-title">
+    <div class="modal-card">
+      <h2 id="prestige-title">⭐ Prestige Reset</h2>
+      <p>Reset all cookies and buildings?</p>
+      <p>Prestige level gained: <strong id="prestige-gain">0</strong></p>
+      <p>New total prestige: <strong id="prestige-new-total">0</strong></p>
+      <p>Production bonus: <strong>+<span id="prestige-new-bonus">0</span>%</strong></p>
+      <div class="modal-btns">
+        <button id="prestige-confirm" class="btn">Reset &amp; Rise</button>
+        <button id="prestige-cancel" class="btn">Not yet</button>
       </div>
     </div>
   </div>
 
-  <div id="offline-modal" class="modal hidden">
-    <div class="modal-content">
-      <h2>Welcome Back!</h2>
-      <p>You were away for <span id="offline-time">0</span>.</p>
-      <p>You earned <span id="offline-cookies">0</span> cookies while away!</p>
-      <button id="offline-ok" class="btn-secondary">Nice!</button>
+  <div id="offline-modal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="offline-title">
+    <div class="modal-card">
+      <h2 id="offline-title">👋 Welcome back!</h2>
+      <p>You were away for <strong id="offline-time">0</strong>.</p>
+      <p>The bakery kept baking: <strong id="offline-cookies">0</strong> cookies!</p>
+      <div class="modal-btns">
+        <button id="offline-ok" class="btn">Sweet!</button>
+      </div>
     </div>
   </div>
 
-  <script src="game.js"></script>
+  <!-- JEE-71: ad placeholder hidden for v1 until real ad integration lands -->
+  <div id="ad-banner-bottom" class="hidden" style="display:none !important">Ad Banner Placeholder</div>
+
 </body>
 </html>
