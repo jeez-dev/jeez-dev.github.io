@@ -46,7 +46,7 @@
     }
     /* Headings / display type lead with Fredoka (fleet standard JEE-195). */
     .title, .gameover-title, #hud-score, #combo-banner,
-    .big-stat, .best-line, .new-best, #best-chip, #fps-chip {
+    .big-stat, .best-line, .new-best, #best-chip, #fps-chip, #hud-level {
       font-family: 'Fredoka', 'Nunito', system-ui, sans-serif;
     }
     .hidden { display: none !important; }
@@ -72,6 +72,13 @@
       font-size: 12px; font-weight: 700; color: #9fb4ff;
       background: rgba(10,16,38,0.6); border: 1px solid rgba(120,140,255,0.35);
       border-radius: 999px; padding: 4px 10px;
+    }
+    /* current level — left chip balancing BEST on the right (JEE-241) */
+    #hud-level {
+      font-size: 13px; font-weight: 800; letter-spacing: 0.08em;
+      color: #ffd76e; background: rgba(10,16,38,0.55); border: 1px solid rgba(255,215,110,0.35);
+      border-radius: 999px; padding: 5px 11px; margin-right: 8px; backdrop-filter: blur(4px);
+      font-variant-numeric: tabular-nums;
     }
     #hud-spacer { flex: 1; }
     #hud-score-wrap { position: absolute; left: 50%; transform: translateX(-50%); top: calc(12px + env(safe-area-inset-top)); text-align: center; }
@@ -177,11 +184,15 @@
       box-shadow: 0 6px 26px rgba(255,171,44,0.4), inset 0 1px 0 rgba(255,255,255,0.55);
       animation: ctaBreathe 1.6s ease-in-out infinite;
       touch-action: manipulation;
+      will-change: transform;
     }
-    .cta:active { transform: scale(0.96); }
+    /* press feedback via one-shot filter change, not an animation — all
+       overlay anims must stay transform/opacity-only (fleet perf rule,
+       JEE-241). The static glow above carries the resting state. */
+    .cta:active { filter: brightness(0.92); }
     @keyframes ctaBreathe {
-      0%, 100% { box-shadow: 0 6px 26px rgba(255,171,44,0.4), inset 0 1px 0 rgba(255,255,255,0.55); }
-      50% { box-shadow: 0 6px 36px rgba(255,171,44,0.62), inset 0 1px 0 rgba(255,255,255,0.55); }
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.035); }
     }
     .hint { margin-top: 20px; color: #6c7cae; font-size: 12.5px; letter-spacing: 0.05em; line-height: 1.7; }
     .gameover-title {
@@ -189,7 +200,7 @@
       color: #ff5470; text-shadow: 0 4px 22px rgba(255,45,85,0.45); margin-bottom: 10px;
     }
   </style>
-  <script type="module" crossorigin src="./assets/index-BrbCGsFq.js"></script>
+  <script type="module" crossorigin src="./assets/index-bppKeu4l.js"></script>
 </head>
 <body>
   <div id="app">
@@ -212,12 +223,15 @@
     <div id="stage" aria-label="Helix Jump game area"></div>
     <div id="vignette"></div>
 
-    <header id="hud">
+    <!-- HUD starts hidden: the start menu owns the screen until a run begins
+         (JEE-241 fleet chrome rule — HUD only during gameplay). -->
+    <header id="hud" class="hidden">
       <span id="fps-chip" class="hidden">-- fps</span>
+      <span id="hud-level">LVL 1</span>
       <span id="hud-spacer"></span>
       <span id="best-chip">BEST 0</span>
     </header>
-    <div id="hud-score-wrap"><div id="hud-score">0</div></div>
+    <div id="hud-score-wrap" class="hidden"><div id="hud-score">0</div></div>
     <div id="combo-banner"></div>
 
     <div id="start-overlay" class="overlay">
@@ -225,12 +239,13 @@
       <div class="subtitle">spin the tower · drop through the gaps · avoid the red</div>
       <div id="start-best" class="best-line"></div>
       <button id="start-btn" class="cta">TAP TO START</button>
-      <div class="hint">⟵ drag to rotate ⟶<br/>land 3+ gaps in a row to smash platforms</div>
+      <div class="hint">drag or &larr; &rarr; to rotate the tower — guide the ball through the gaps<br/>land 3+ gaps in a row to smash platforms</div>
     </div>
 
     <div id="over-overlay" class="overlay hidden">
       <div class="gameover-title">GAME OVER</div>
       <div class="big-stat" id="over-score">0</div>
+      <div class="best-line" id="over-level">LEVEL 1</div>
       <div class="best-line" id="over-best">BEST 0</div>
       <div id="over-new-best" class="new-best hidden">★ NEW BEST ★</div>
       <button id="retry-btn" class="cta">TAP TO RETRY</button>
