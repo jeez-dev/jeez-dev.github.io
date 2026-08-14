@@ -9,22 +9,40 @@
   <meta name="mobile-web-app-capable" content="yes" />
   <title>Cookie Clicker — jeez.games</title>
   <style>
+    /* Fleet fonts (JEE-195/JEE-198): self-hosted Fredoka 600 (headings) +
+       Nunito 400/700/800 (body) — same files as crossy-road/claw-drop. */
     @font-face {
       font-family: 'Fredoka';
-      src: url('fonts/fredoka-600.woff2') format('woff2');
       font-weight: 600;
+      font-style: normal;
       font-display: swap;
+      src: url('fonts/fredoka-600.woff2') format('woff2');
     }
     @font-face {
       font-family: 'Nunito';
-      src: url('fonts/nunito-700.woff2') format('woff2');
-      font-weight: 700;
+      font-weight: 400;
+      font-style: normal;
       font-display: swap;
+      src: url('fonts/nunito-400.woff2') format('woff2');
+    }
+    @font-face {
+      font-family: 'Nunito';
+      font-weight: 700;
+      font-style: normal;
+      font-display: swap;
+      src: url('fonts/nunito-700.woff2') format('woff2');
+    }
+    @font-face {
+      font-family: 'Nunito';
+      font-weight: 800;
+      font-style: normal;
+      font-display: swap;
+      src: url('fonts/nunito-800.woff2') format('woff2');
     }
     * { margin: 0; padding: 0; box-sizing: border-box; }
     html, body { width: 100%; height: 100%; overflow: hidden; background: #241610; }
     body {
-      font-family: 'Nunito', 'Fredoka', system-ui, sans-serif;
+      font-family: 'Nunito', system-ui, sans-serif;
       color: #ffe9c9;
       -webkit-user-select: none; user-select: none;
       -webkit-tap-highlight-color: transparent;
@@ -80,7 +98,7 @@
     #hud-logo { font-size: 26px; line-height: 1; filter: drop-shadow(0 2px 3px rgba(0,0,0,0.4)); }
     #hud-main { flex: 1; min-width: 0; }
     #hud-cookies {
-      font-family: 'Fredoka', system-ui, sans-serif;
+      font-family: 'Fredoka', 'Nunito', system-ui, sans-serif;
       font-size: clamp(24px, 7vw, 34px); font-weight: 600; line-height: 1.05;
       color: #ffd98f;
       text-shadow: 0 2px 0 rgba(90,50,10,0.55), 0 0 18px rgba(255,170,60,0.25);
@@ -127,7 +145,7 @@
       border-bottom: 1px solid rgba(255,196,107,0.14);
     }
     #shop-head h2 {
-      font-family: 'Fredoka', system-ui, sans-serif; font-weight: 600;
+      font-family: 'Fredoka', 'Nunito', system-ui, sans-serif; font-weight: 600;
       font-size: 15px; letter-spacing: 0.06em; color: #ffd98f;
     }
     #shop-head .hint { font-size: 11px; color: #b08d64; }
@@ -154,7 +172,7 @@
     .card-icon { font-size: 24px; width: 34px; text-align: center; flex-shrink: 0; filter: drop-shadow(0 2px 2px rgba(0,0,0,0.35)); }
     .card-body { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 1px; }
     .card-top { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
-    .card-name { font-family: 'Fredoka', system-ui, sans-serif; font-weight: 600; font-size: 14px; color: #ffe9c9; }
+    .card-name { font-family: 'Fredoka', 'Nunito', system-ui, sans-serif; font-weight: 600; font-size: 14px; color: #ffe9c9; }
     .card-owned { font-size: 12px; color: #e9c0ff; font-weight: 700; font-variant-numeric: tabular-nums; }
     .card-cps { font-size: 11.5px; color: #c9a273; }
     .card-flavor { color: #9b7a56; font-style: italic; }
@@ -170,7 +188,7 @@
       flex: 1; min-height: 40px; padding: 8px 14px; border-radius: 11px;
       border: 1px solid rgba(255,196,107,0.35);
       background: rgba(70,42,20,0.65); color: #ffe9c9;
-      font-family: 'Fredoka', system-ui, sans-serif; font-weight: 600; font-size: 13.5px; letter-spacing: 0.04em;
+      font-family: 'Fredoka', 'Nunito', system-ui, sans-serif; font-weight: 600; font-size: 13.5px; letter-spacing: 0.04em;
       cursor: pointer; transition: background 0.15s, border-color 0.15s;
     }
     .btn:hover { background: rgba(94,56,24,0.75); }
@@ -182,7 +200,7 @@
     #floaters { position: fixed; inset: 0; pointer-events: none; z-index: 60; overflow: hidden; }
     .floater {
       position: absolute; transform: translate(-50%, -50%);
-      font-family: 'Fredoka', system-ui, sans-serif; font-weight: 600; font-size: 21px;
+      font-family: 'Fredoka', 'Nunito', system-ui, sans-serif; font-weight: 600; font-size: 21px;
       color: #ffe08a; text-shadow: 0 2px 0 rgba(90,50,10,0.6), 0 0 12px rgba(255,170,60,0.35);
       animation: floatUp 0.95s ease-out forwards;
     }
@@ -202,7 +220,7 @@
       background: linear-gradient(180deg, #35200f, #241610);
       box-shadow: 0 18px 50px rgba(0,0,0,0.5);
     }
-    .modal-card h2 { font-family: 'Fredoka', system-ui, sans-serif; font-weight: 600; color: #ffd98f; font-size: 21px; margin-bottom: 10px; }
+    .modal-card h2 { font-family: 'Fredoka', 'Nunito', system-ui, sans-serif; font-weight: 600; color: #ffd98f; font-size: 21px; margin-bottom: 10px; }
     .modal-card p { font-size: 13.5px; color: #d8b489; margin: 6px 0; }
     .modal-card strong { color: #ffe9c9; font-variant-numeric: tabular-nums; }
     .modal-btns { display: flex; gap: 9px; margin-top: 16px; }
