@@ -2,37 +2,158 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
   <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
-  <meta name="theme-color" content="#1a1a2e" />
+  <meta name="theme-color" content="#0b1026" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="mobile-web-app-capable" content="yes" />
   <title>Helix Jump — jeez.games</title>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     html, body {
-      width: 100%;
-      height: 100%;
-      overflow: hidden;
-      background: #1a1a2e;
-      font-family: 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+      width: 100%; height: 100%; overflow: hidden;
+      background: #0b1026;
+      font-family: 'Segoe UI', 'Helvetica Neue', system-ui, sans-serif;
       touch-action: none;
       -webkit-touch-callout: none;
-      -webkit-user-select: none;
-      user-select: none;
+      -webkit-user-select: none; user-select: none;
     }
-    #game-container {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      width: 100%;
-      height: 100%;
+    .hidden { display: none !important; }
+
+    #app { position: fixed; inset: 0; }
+    #stage { position: absolute; inset: 0; outline: none; }
+
+    /* soft edge vignette over the 3D scene */
+    #vignette {
+      position: absolute; inset: 0; pointer-events: none; z-index: 2;
+      background:
+        radial-gradient(ellipse 120% 90% at 50% 45%, transparent 55%, rgba(4,7,18,0.55) 100%),
+        linear-gradient(180deg, rgba(4,7,18,0.5) 0%, transparent 14%, transparent 84%, rgba(4,7,18,0.62) 100%);
     }
-    canvas { display: block; }
+
+    /* ---------- HUD ---------- */
+    #hud {
+      position: absolute; top: 0; left: 0; right: 0; z-index: 5;
+      padding: calc(10px + env(safe-area-inset-top)) 16px 0;
+      display: flex; align-items: flex-start; pointer-events: none;
+    }
+    #fps-chip {
+      font-size: 12px; font-weight: 700; color: #9fb4ff;
+      background: rgba(10,16,38,0.6); border: 1px solid rgba(120,140,255,0.35);
+      border-radius: 999px; padding: 4px 10px;
+    }
+    #hud-spacer { flex: 1; }
+    #hud-score-wrap { position: absolute; left: 50%; transform: translateX(-50%); top: calc(12px + env(safe-area-inset-top)); text-align: center; }
+    #hud-score {
+      font-size: clamp(44px, 13vw, 64px); font-weight: 800; line-height: 1;
+      color: #ffffff; text-shadow: 0 2px 14px rgba(80,110,255,0.45), 0 1px 2px rgba(0,0,0,0.6);
+      font-variant-numeric: tabular-nums; letter-spacing: -0.02em;
+    }
+    #best-chip {
+      font-size: 12px; font-weight: 800; letter-spacing: 0.08em;
+      color: #aebaff; background: rgba(10,16,38,0.55); border: 1px solid rgba(120,140,255,0.3);
+      border-radius: 999px; padding: 5px 11px; backdrop-filter: blur(4px);
+      font-variant-numeric: tabular-nums;
+    }
+    #combo-banner {
+      position: absolute; left: 50%; top: 22%; transform: translateX(-50%);
+      font-size: clamp(26px, 8vw, 40px); font-weight: 900; letter-spacing: 0.02em;
+      background: linear-gradient(180deg, #ffe08a, #ff9e2c);
+      -webkit-background-clip: text; background-clip: text; color: transparent;
+      text-shadow: 0 0 22px rgba(255,170,60,0.35);
+      opacity: 0; pointer-events: none; z-index: 6;
+      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));
+    }
+    #combo-banner.combo-on { animation: comboPop 0.35s cubic-bezier(0.2, 1.6, 0.4, 1) forwards, comboHold 0.55s 0.35s linear forwards; }
+    @keyframes comboPop { 0% { opacity: 0; transform: translateX(-50%) scale(0.4); } 100% { opacity: 1; transform: translateX(-50%) scale(1); } }
+    @keyframes comboHold { 0%, 100% { opacity: 1; } }
+
+    /* danger screen flash */
+    body.flash-danger #vignette {
+      animation: dangerFlash 0.32s ease-out;
+    }
+    @keyframes dangerFlash {
+      0% { box-shadow: inset 0 0 0 999px rgba(255,45,85,0); }
+      25% { box-shadow: inset 0 0 120px 40px rgba(255,45,85,0.55); }
+      100% { box-shadow: inset 0 0 0 999px rgba(255,45,85,0); }
+    }
+
+    /* ---------- overlays ---------- */
+    .overlay {
+      position: absolute; inset: 0; z-index: 10;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      background: radial-gradient(ellipse 90% 70% at 50% 42%, rgba(11,16,38,0.25), rgba(6,9,22,0.82));
+      backdrop-filter: blur(3px);
+      text-align: center; padding: 24px;
+    }
+    .title {
+      font-size: clamp(40px, 11vw, 58px); font-weight: 900; letter-spacing: 0.04em;
+      background: linear-gradient(180deg, #cdd9ff 10%, #7ea0ff 55%, #8f6bff 100%);
+      -webkit-background-clip: text; background-clip: text; color: transparent;
+      filter: drop-shadow(0 4px 18px rgba(90,110,255,0.35));
+      margin-bottom: 4px;
+    }
+    .subtitle { color: #8fa1d8; font-size: clamp(13px, 3.6vw, 15px); margin-bottom: 26px; letter-spacing: 0.04em; }
+    .big-stat { font-size: clamp(60px, 18vw, 92px); font-weight: 900; color: #fff; line-height: 1;
+      text-shadow: 0 4px 24px rgba(110,140,255,0.5); font-variant-numeric: tabular-nums; }
+    .best-line { color: #aebaff; font-weight: 700; letter-spacing: 0.1em; margin-top: 6px; font-size: clamp(13px, 3.6vw, 15px); }
+    .new-best {
+      margin-top: 8px; color: #ffd76e; font-weight: 900; letter-spacing: 0.14em; font-size: 14px;
+      animation: newBestPulse 0.9s ease-in-out infinite;
+    }
+    @keyframes newBestPulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.55; } }
+    .cta {
+      margin-top: 30px; min-width: 210px; min-height: 54px;
+      padding: 15px 34px; border-radius: 999px; border: none; cursor: pointer;
+      font: inherit; font-weight: 900; font-size: 17px; letter-spacing: 0.12em;
+      color: #0b1026;
+      background: linear-gradient(180deg, #ffe08a, #ffab2c);
+      box-shadow: 0 6px 26px rgba(255,171,44,0.4), inset 0 1px 0 rgba(255,255,255,0.55);
+      animation: ctaBreathe 1.6s ease-in-out infinite;
+      touch-action: manipulation;
+    }
+    .cta:active { transform: scale(0.96); }
+    @keyframes ctaBreathe {
+      0%, 100% { box-shadow: 0 6px 26px rgba(255,171,44,0.4), inset 0 1px 0 rgba(255,255,255,0.55); }
+      50% { box-shadow: 0 6px 36px rgba(255,171,44,0.62), inset 0 1px 0 rgba(255,255,255,0.55); }
+    }
+    .hint { margin-top: 20px; color: #6c7cae; font-size: 12.5px; letter-spacing: 0.05em; line-height: 1.7; }
+    .gameover-title {
+      font-size: clamp(30px, 8.5vw, 44px); font-weight: 900; letter-spacing: 0.06em;
+      color: #ff5470; text-shadow: 0 4px 22px rgba(255,45,85,0.45); margin-bottom: 10px;
+    }
   </style>
-  <script type="module" crossorigin src="./assets/index-CeaeLusf.js"></script>
+  <script type="module" crossorigin src="./assets/index-UUCMeeJe.js"></script>
 </head>
 <body>
-  <div id="game-container"></div>
+  <div id="app">
+    <div id="stage" aria-label="Helix Jump game area"></div>
+    <div id="vignette"></div>
+
+    <header id="hud">
+      <span id="fps-chip" class="hidden">-- fps</span>
+      <span id="hud-spacer"></span>
+      <span id="best-chip">BEST 0</span>
+    </header>
+    <div id="hud-score-wrap"><div id="hud-score">0</div></div>
+    <div id="combo-banner"></div>
+
+    <div id="start-overlay" class="overlay">
+      <div class="title">HELIX JUMP</div>
+      <div class="subtitle">spin the tower · drop through the gaps · avoid the red</div>
+      <div id="start-best" class="best-line"></div>
+      <button id="start-btn" class="cta">TAP TO START</button>
+      <div class="hint">⟵ drag to rotate ⟶<br/>land 3+ gaps in a row to smash platforms</div>
+    </div>
+
+    <div id="over-overlay" class="overlay hidden">
+      <div class="gameover-title">GAME OVER</div>
+      <div class="big-stat" id="over-score">0</div>
+      <div class="best-line" id="over-best">BEST 0</div>
+      <div id="over-new-best" class="new-best hidden">★ NEW BEST ★</div>
+      <button id="retry-btn" class="cta">TAP TO RETRY</button>
+    </div>
+  </div>
+
 </body>
 </html>
