@@ -64,11 +64,114 @@
         position: absolute;
         inset: 0;
       }
+      /* Boot splash (JEE-223) — paints before the JS bundle; removed on the
+         first rendered frame by src/game/main.ts. Background matches the
+         game's sky gradient exactly so removal has zero flash. */
+      #boot {
+        position: absolute;
+        inset: 0;
+        z-index: 20;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 18px;
+        background: linear-gradient(180deg, #0a1524 0%, #0d1b2a 45%, #081120 100%);
+        font-family: 'Fredoka', 'Nunito', system-ui, sans-serif;
+        animation: wc-boot-in 0.25s ease-out;
+      }
+      #boot .boot-icon {
+        width: 104px;
+        height: auto;
+        filter: drop-shadow(0 0 16px rgba(244, 162, 89, 0.5));
+      }
+      #boot .boot-title {
+        font-size: 30px;
+        font-weight: 600;
+        letter-spacing: 0.02em;
+        color: #ffe9c9;
+        text-shadow: 0 0 22px rgba(244, 162, 89, 0.45);
+      }
+      #boot .boot-dots {
+        display: flex;
+        gap: 8px;
+      }
+      #boot .boot-dots span {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: #f4a259;
+        animation: wc-boot-dot 1s ease-in-out infinite;
+      }
+      #boot .boot-dots span:nth-child(2) {
+        animation-delay: 0.15s;
+        background: #2ec4b6;
+      }
+      #boot .boot-dots span:nth-child(3) {
+        animation-delay: 0.3s;
+        background: #ffd803;
+      }
+      @keyframes wc-boot-dot {
+        0%,
+        100% {
+          transform: scale(0.6);
+          opacity: 0.4;
+        }
+        50% {
+          transform: scale(1);
+          opacity: 1;
+        }
+      }
+      @keyframes wc-boot-in {
+        from {
+          opacity: 0;
+        }
+      }
     </style>
-    <script type="module" crossorigin src="./assets/index-BhanJvlB.js"></script>
+    <script type="module" crossorigin src="./assets/index-C4ZmmIr4.js"></script>
     <link rel="stylesheet" crossorigin href="./assets/index-C0GvHrcc.css">
   </head>
   <body>
-    <div id="app"></div>
+    <div id="app">
+      <div id="boot" aria-hidden="true">
+        <svg class="boot-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 118 62">
+          <!-- swipe trail through the tile centers (in-game trail color #ffbe6e) -->
+          <path
+            d="M20 18 L46 42 L72 18 L98 42"
+            fill="none"
+            stroke="#ffbe6e"
+            stroke-width="5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            opacity="0.85"
+          />
+          <g
+            font-family="'Fredoka', system-ui, sans-serif"
+            font-size="17"
+            font-weight="600"
+            text-anchor="middle"
+          >
+            <g transform="translate(20 18) rotate(-8)">
+              <rect x="-13" y="-13" width="26" height="26" rx="7" fill="#faf5ea" stroke="#e8b477" stroke-width="2" />
+              <text x="0" y="6.5" fill="#0d1b2a">W</text>
+            </g>
+            <g transform="translate(46 42) rotate(7)">
+              <rect x="-13" y="-13" width="26" height="26" rx="7" fill="#faf5ea" stroke="#e8b477" stroke-width="2" />
+              <text x="0" y="6.5" fill="#0d1b2a">O</text>
+            </g>
+            <g transform="translate(72 18) rotate(-6)">
+              <rect x="-13" y="-13" width="26" height="26" rx="7" fill="#faf5ea" stroke="#e8b477" stroke-width="2" />
+              <text x="0" y="6.5" fill="#0d1b2a">R</text>
+            </g>
+            <g transform="translate(98 42) rotate(9)">
+              <rect x="-13" y="-13" width="26" height="26" rx="7" fill="#faf5ea" stroke="#e8b477" stroke-width="2" />
+              <text x="0" y="6.5" fill="#0d1b2a">D</text>
+            </g>
+          </g>
+        </svg>
+        <div class="boot-title">Word Connect</div>
+        <div class="boot-dots"><span></span><span></span><span></span></div>
+      </div>
+    </div>
   </body>
 </html>
