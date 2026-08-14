@@ -1,0 +1,14 @@
+{
+  "name": "Claw Drop",
+  "short_name": "Claw Drop",
+  "description": "Timing-grab claw machine. Collect every prize on the shelf.",
+  "start_url": "./",
+  "display": "fullscreen",
+  "orientation": "portrait",
+  "background_color": "#140e2e",
+  "theme_color": "#140e2e",
+  "icons": [
+    { "src": "./apple-touch-icon.png", "sizes": "180x180", "type": "image/png" },
+    { "src": "./favicon.svg", "sizes": "any", "type": "image/svg+xml" }
+  ]
+}
