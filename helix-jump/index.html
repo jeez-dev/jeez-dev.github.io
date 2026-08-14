@@ -9,14 +9,45 @@
   <meta name="mobile-web-app-capable" content="yes" />
   <title>Helix Jump — jeez.games</title>
   <style>
+    /* Fleet fonts (JEE-199 / JEE-195): self-hosted woff2 under fonts/,
+       same files + pattern as the Crossy Road / Water Sort builds. */
+    @font-face {
+      font-family: 'Fredoka';
+      src: url('fonts/fredoka-600.woff2') format('woff2');
+      font-weight: 600;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'Nunito';
+      src: url('fonts/nunito-400.woff2') format('woff2');
+      font-weight: 400;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'Nunito';
+      src: url('fonts/nunito-700.woff2') format('woff2');
+      font-weight: 700;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'Nunito';
+      src: url('fonts/nunito-800.woff2') format('woff2');
+      font-weight: 800;
+      font-display: swap;
+    }
     * { margin: 0; padding: 0; box-sizing: border-box; }
     html, body {
       width: 100%; height: 100%; overflow: hidden;
       background: #0b1026;
-      font-family: 'Segoe UI', 'Helvetica Neue', system-ui, sans-serif;
+      font-family: 'Nunito', system-ui, sans-serif;
       touch-action: none;
       -webkit-touch-callout: none;
       -webkit-user-select: none; user-select: none;
+    }
+    /* Headings / display type lead with Fredoka (fleet standard JEE-195). */
+    .title, .gameover-title, #hud-score, #combo-banner,
+    .big-stat, .best-line, .new-best, #best-chip, #fps-chip {
+      font-family: 'Fredoka', 'Nunito', system-ui, sans-serif;
     }
     .hidden { display: none !important; }
 
@@ -78,7 +109,7 @@
         radial-gradient(ellipse at 50% 30%, rgba(126,160,255,0.12) 0%, transparent 70%),
         #0b1026;
       color: #cdd9ff;
-      font-family: 'Fredoka', 'Segoe UI', 'Helvetica Neue', system-ui, sans-serif;
+      font-family: 'Fredoka', 'Nunito', system-ui, sans-serif;
       animation: hj-boot-in 0.25s ease-out;
     }
     #boot .boot-icon {
