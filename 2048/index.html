@@ -2,20 +2,34 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="mobile-web-app-capable" content="yes" />
   <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
-  <meta name="theme-color" content="#faf8ef" />
+  <meta name="theme-color" content="#150f1e" />
   <title>2048 — jeez.games</title>
   <style>
+    @font-face {
+      font-family: 'Fredoka';
+      src: url('fonts/fredoka-600.woff2') format('woff2');
+      font-weight: 600;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'Nunito';
+      src: url('fonts/nunito-700.woff2') format('woff2');
+      font-weight: 700;
+      font-display: swap;
+    }
     * { margin: 0; padding: 0; box-sizing: border-box; }
     html, body {
       width: 100%;
       height: 100%;
       overflow: hidden;
-      background: #faf8ef;
-      font-family: 'Clear Sans', 'Helvetica Neue', Arial, sans-serif;
+      /* dusk "ember" gradient mirrors the in-canvas backdrop so the letterbox
+         bars fade seamlessly into the scene */
+      background: linear-gradient(180deg, #2d2338 0%, #150f1e 78%);
+      font-family: 'Nunito', 'Fredoka', 'Helvetica Neue', Arial, sans-serif;
       touch-action: none;
       -webkit-touch-callout: none;
       -webkit-user-select: none;
@@ -30,7 +44,7 @@
     }
     canvas { display: block; }
   </style>
-  <script type="module" crossorigin src="./assets/index-BBJMr4fS.js"></script>
+  <script type="module" crossorigin src="./assets/index-BaeEs1HF.js"></script>
 </head>
 <body>
   <div id="game-container"></div>
