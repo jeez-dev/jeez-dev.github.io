@@ -17,8 +17,20 @@
     }
     @font-face {
       font-family: 'Nunito';
+      src: url('fonts/nunito-400.woff2') format('woff2');
+      font-weight: 400;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'Nunito';
       src: url('fonts/nunito-700.woff2') format('woff2');
       font-weight: 700;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'Nunito';
+      src: url('fonts/nunito-800.woff2') format('woff2');
+      font-weight: 800;
       font-display: swap;
     }
     * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -29,7 +41,7 @@
       /* dusk "ember" gradient mirrors the in-canvas backdrop so the letterbox
          bars fade seamlessly into the scene */
       background: linear-gradient(180deg, #2d2338 0%, #150f1e 78%);
-      font-family: 'Nunito', 'Fredoka', 'Helvetica Neue', Arial, sans-serif;
+      font-family: 'Nunito', system-ui, sans-serif;
       touch-action: none;
       -webkit-touch-callout: none;
       -webkit-user-select: none;
@@ -44,7 +56,7 @@
     }
     canvas { display: block; }
   </style>
-  <script type="module" crossorigin src="./assets/index-BaeEs1HF.js"></script>
+  <script type="module" crossorigin src="./assets/index-u0WiCRUI.js"></script>
 </head>
 <body>
   <div id="game-container"></div>
