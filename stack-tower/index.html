@@ -126,10 +126,52 @@
     #over-tag { margin-top: 2px; font-size: 17px; letter-spacing: 0.14em; color: #e8e4f5; }
     #over-tag.newbest { color: #ffd76a; }
     #over-best { margin-top: 14px; color: #b9b4cc; font-size: 15px; letter-spacing: 0.1em; }
+
+    /* Boot splash (fleet template, JEE-220) — inline markup+CSS paints before the
+       game bundle executes; removed on the first rendered frame by main.js.
+       Background matches html/body #232045 so the swap has zero flash. */
+    #boot {
+      position: fixed; inset: 0; z-index: 50;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      gap: 18px; background: #232045;
+      font-family: 'Fredoka', 'Nunito', system-ui, sans-serif;
+      animation: boot-in 0.25s ease-out;
+    }
+    #boot .boot-tower {
+      width: 72px; height: 72px;
+      filter: drop-shadow(0 0 16px rgba(255, 214, 106, 0.45));
+    }
+    #boot .boot-title {
+      font-size: 30px; font-weight: 600; letter-spacing: 0.02em; color: #ffd76a;
+      text-shadow: 0 2px 0 rgba(0,0,0,0.25), 0 0 22px rgba(255, 214, 106, 0.45);
+    }
+    #boot .boot-dots { display: flex; gap: 8px; }
+    #boot .boot-dots span {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: #ffd76a;
+      animation: boot-dot 1s ease-in-out infinite;
+    }
+    #boot .boot-dots span:nth-child(2) { animation-delay: 0.15s; background: #e2635a; }
+    #boot .boot-dots span:nth-child(3) { animation-delay: 0.3s; background: #7f86c9; }
+    @keyframes boot-dot {
+      0%, 100% { transform: scale(0.6); opacity: 0.4; }
+      50% { transform: scale(1); opacity: 1; }
+    }
+    @keyframes boot-in { from { opacity: 0; } }
   </style>
-  <script type="module" crossorigin src="./assets/index-TYDK4imj.js"></script>
+  <script type="module" crossorigin src="./assets/index-MkPoXmab.js"></script>
 </head>
 <body>
+  <div id="boot" aria-hidden="true">
+    <svg class="boot-tower" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
+      <rect x="10" y="36" width="28" height="6" rx="1.6" fill="#4d3070" />
+      <rect x="12" y="27" width="24" height="6" rx="1.6" fill="#7f86c9" />
+      <rect x="14" y="18" width="20" height="6" rx="1.6" fill="#e2635a" />
+      <rect x="7" y="9" width="15" height="6" rx="1.6" fill="#ffd76a" />
+    </svg>
+    <div class="boot-title">Stack Tower</div>
+    <div class="boot-dots"><span></span><span></span><span></span></div>
+  </div>
   <div id="game-container"></div>
   <div id="vignette"></div>
   <div id="float-layer"></div>
