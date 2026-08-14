@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no" />
+    <meta name="theme-color" content="#16111c" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="Ember Road TD" />
+    <meta name="description" content="Ember Road TD — pave the road, place the towers, hold the castle. Path-shaping isometric dark-fantasy tower defense by jeez.games." />
+    <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
+    <link rel="manifest" href="./manifest.webmanifest" />
+    <link rel="apple-touch-icon" href="./apple-touch-icon.png" />
+    <!-- Fleet fonts (JEE-203): self-hosted Fredoka 600 + Nunito 400/700/800, one preload each, zero external font requests. -->
+    <link rel="preload" href="./fonts/fredoka-600.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="./fonts/nunito-400.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="./fonts/nunito-700.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="./fonts/nunito-800.woff2" as="font" type="font/woff2" crossorigin />
+    <title>Ember Road TD — jeez.games</title>
+    <style>
+      @font-face {
+        font-family: 'Fredoka';
+        font-weight: 600;
+        font-style: normal;
+        font-display: swap;
+        src: url('./fonts/fredoka-600.woff2') format('woff2');
+      }
+      @font-face {
+        font-family: 'Nunito';
+        font-weight: 400;
+        font-style: normal;
+        font-display: swap;
+        src: url('./fonts/nunito-400.woff2') format('woff2');
+      }
+      @font-face {
+        font-family: 'Nunito';
+        font-weight: 700;
+        font-style: normal;
+        font-display: swap;
+        src: url('./fonts/nunito-700.woff2') format('woff2');
+      }
+      @font-face {
+        font-family: 'Nunito';
+        font-weight: 800;
+        font-style: normal;
+        font-display: swap;
+        src: url('./fonts/nunito-800.woff2') format('woff2');
+      }
+      /* Boot splash (fleet Water Sort pattern, JEE-225): paints inline before the
+         JS bundle executes; main.ts removes #boot on the first rendered frame.
+         Gradient matches the scene's ember sky so removal flashes zero. */
+      #boot {
+        position: fixed;
+        inset: 0;
+        z-index: 20;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 18px;
+        background: linear-gradient(180deg, #241a2e 0%, #171120 46%, #0b0812 100%);
+        color: #ff8a3c;
+        font-family: 'Fredoka', 'Nunito', system-ui, sans-serif;
+        animation: er-boot-in 0.25s ease-out;
+      }
+      #boot .boot-icon {
+        width: 76px;
+        height: 76px;
+        filter: drop-shadow(0 0 16px rgba(255, 122, 40, 0.55));
+      }
+      #boot .boot-title {
+        font-size: 30px;
+        font-weight: 600;
+        letter-spacing: 0.06em;
+        color: #f4e9dc;
+        text-shadow: 0 0 22px rgba(255, 122, 40, 0.4);
+      }
+      #boot .boot-title span {
+        color: #ff8a3c;
+        text-shadow: 0 0 22px rgba(255, 122, 40, 0.55);
+      }
+      #boot .boot-dots {
+        display: flex;
+        gap: 8px;
+      }
+      #boot .boot-dots span {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: #ff8a3c;
+        animation: er-boot-dot 1s ease-in-out infinite;
+      }
+      #boot .boot-dots span:nth-child(2) {
+        animation-delay: 0.15s;
+        background: #6fa8ff;
+      }
+      #boot .boot-dots span:nth-child(3) {
+        animation-delay: 0.3s;
+        background: #ffd23f;
+      }
+      @keyframes er-boot-dot {
+        0%,
+        100% {
+          transform: scale(0.6);
+          opacity: 0.4;
+        }
+        50% {
+          transform: scale(1);
+          opacity: 1;
+        }
+      }
+      @keyframes er-boot-in {
+        from {
+          opacity: 0;
+        }
+      }
+    </style>
+    <script type="module" crossorigin src="./assets/index-Bn0iHG7g.js"></script>
+    <link rel="stylesheet" crossorigin href="./assets/index-DIE8JA6v.css">
+  </head>
+  <body>
+    <div id="app">
+      <div id="boot" aria-hidden="true">
+        <svg class="boot-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
+          <path
+            d="M10 44V22l4-3v-6h4v4l6-4 6 4v-4h4v6l4 3v22"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="3"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+          <path
+            d="M24 44c0-6-8-6-8-11 0-4 5-4 8-7 3 3 8 3 8 7 0 5-8 5-8 11z"
+            fill="currentColor"
+            opacity="0.85"
+          />
+          <circle cx="8" cy="12" r="2" fill="currentColor" opacity="0.7" />
+          <circle cx="41" cy="15" r="1.6" fill="currentColor" opacity="0.5" />
+        </svg>
+        <div class="boot-title">EMBER <span>ROAD</span> TD</div>
+        <div class="boot-dots"><span></span><span></span><span></span></div>
+      </div>
+    </div>
+  </body>
+</html>
