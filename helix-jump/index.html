@@ -68,6 +68,41 @@
     @keyframes comboPop { 0% { opacity: 0; transform: translateX(-50%) scale(0.4); } 100% { opacity: 1; transform: translateX(-50%) scale(1); } }
     @keyframes comboHold { 0%, 100% { opacity: 1; } }
 
+    /* Boot splash (fleet template, JEE-219) — painted from raw HTML/CSS before
+       the JS bundle executes; removed on the first rendered frame by main.ts.
+       Background matches the page/scene color exactly, so removal has zero flash. */
+    #boot {
+      position: absolute; inset: 0; z-index: 30;
+      display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 18px;
+      background:
+        radial-gradient(ellipse at 50% 30%, rgba(126,160,255,0.12) 0%, transparent 70%),
+        #0b1026;
+      color: #cdd9ff;
+      font-family: 'Fredoka', 'Segoe UI', 'Helvetica Neue', system-ui, sans-serif;
+      animation: hj-boot-in 0.25s ease-out;
+    }
+    #boot .boot-icon {
+      width: 72px; height: 72px;
+      filter: drop-shadow(0 0 16px rgba(126,160,255,0.55));
+    }
+    #boot .boot-title {
+      font-size: clamp(24px, 7vw, 32px); font-weight: 600; letter-spacing: 0.02em;
+      text-shadow: 0 0 22px rgba(126,160,255,0.45), 0 0 34px rgba(143,107,255,0.35);
+    }
+    #boot .boot-dots { display: flex; gap: 8px; }
+    #boot .boot-dots span {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: #7ea0ff;
+      animation: hj-boot-dot 1s ease-in-out infinite;
+    }
+    #boot .boot-dots span:nth-child(2) { animation-delay: 0.15s; background: #8f6bff; }
+    #boot .boot-dots span:nth-child(3) { animation-delay: 0.3s; background: #ffd76e; }
+    @keyframes hj-boot-dot {
+      0%, 100% { transform: scale(0.6); opacity: 0.4; }
+      50% { transform: scale(1); opacity: 1; }
+    }
+    @keyframes hj-boot-in { from { opacity: 0; } }
+
     /* danger screen flash */
     body.flash-danger #vignette {
       animation: dangerFlash 0.32s ease-out;
@@ -123,10 +158,26 @@
       color: #ff5470; text-shadow: 0 4px 22px rgba(255,45,85,0.45); margin-bottom: 10px;
     }
   </style>
-  <script type="module" crossorigin src="./assets/index-UUCMeeJe.js"></script>
+  <script type="module" crossorigin src="./assets/index-BrbCGsFq.js"></script>
 </head>
 <body>
   <div id="app">
+    <div id="boot" aria-hidden="true">
+      <svg class="boot-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
+        <!-- tower pole -->
+        <path d="M24 7.5v35" fill="none" stroke="#3d477c" stroke-width="2.2" stroke-linecap="round" />
+        <!-- platform rings, edge-on; alternating missing-wedge sides suggest rotation -->
+        <path d="M11 15A13 4.4 0 0 1 37 15" fill="none" stroke="#cdd9ff" stroke-width="3" stroke-linecap="round" />
+        <path d="M12.7 20.8A13 4.4 0 0 1 36.2 24.5" fill="none" stroke="#7ea0ff" stroke-width="3" stroke-linecap="round" />
+        <path d="M11.8 32.5A13 4.4 0 0 1 35.3 28.8" fill="none" stroke="#8f6bff" stroke-width="3" stroke-linecap="round" />
+        <path d="M11 39A13 4.4 0 0 1 37 39" fill="none" stroke="#7ea0ff" stroke-width="3" stroke-linecap="round" />
+        <!-- ball -->
+        <circle cx="13" cy="9" r="3.9" fill="#ffd76e" />
+      </svg>
+      <div class="boot-title">Helix Jump</div>
+      <div class="boot-dots"><span></span><span></span><span></span></div>
+    </div>
+
     <div id="stage" aria-label="Helix Jump game area"></div>
     <div id="vignette"></div>
 
