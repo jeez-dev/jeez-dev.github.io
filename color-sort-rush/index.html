@@ -8,7 +8,37 @@
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="mobile-web-app-capable" content="yes" />
   <title>Color Sort Rush — jeez.games</title>
+  <!-- Fleet fonts (JEE-195): preload every bundled face referenced by @font-face below. -->
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="fonts/fredoka-600.woff2" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="fonts/nunito-400.woff2" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="fonts/nunito-700.woff2" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="fonts/nunito-800.woff2" />
   <style>
+    /* Fleet fonts (JEE-195): bundled self-hosted faces, relative fonts/ paths. */
+    @font-face {
+      font-family: 'Fredoka';
+      src: url('fonts/fredoka-600.woff2') format('woff2');
+      font-weight: 600;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'Nunito';
+      src: url('fonts/nunito-400.woff2') format('woff2');
+      font-weight: 400;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'Nunito';
+      src: url('fonts/nunito-700.woff2') format('woff2');
+      font-weight: 700;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'Nunito';
+      src: url('fonts/nunito-800.woff2') format('woff2');
+      font-weight: 800;
+      font-display: swap;
+    }
     * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
     :root {
       --bg: #0f0e17; --surface: #1a1932; --surface2: #232244;
@@ -18,7 +48,7 @@
     html, body {
       width: 100%; height: 100%; overflow: hidden;
       background: var(--bg); color: var(--text);
-      font-family: 'Segoe UI', 'Helvetica Neue', system-ui, sans-serif;
+      font-family: 'Nunito', system-ui, sans-serif;
       touch-action: none; -webkit-touch-callout: none;
       -webkit-user-select: none; user-select: none;
     }
@@ -109,6 +139,7 @@
     #title-screen { justify-content: center; gap: 22px; padding: 24px; text-align: center;
       background: radial-gradient(ellipse at 50% 30%, rgba(127,90,240,0.16) 0%, transparent 70%); }
     .title-logo {
+      font-family: 'Fredoka', 'Nunito', system-ui, sans-serif;
       font-size: clamp(40px, 11vw, 56px); font-weight: 900; letter-spacing: 0.05em; line-height: 1.04;
       background: linear-gradient(180deg, #ffe3e2 5%, var(--accent) 55%, var(--accent2) 105%);
       -webkit-background-clip: text; background-clip: text; color: transparent;
@@ -144,7 +175,8 @@
     /* level select */
     #level-select { justify-content: flex-start; padding: calc(20px + env(safe-area-inset-top)) 16px 16px; gap: 14px;
       background: rgba(15,14,23,0.72); backdrop-filter: blur(10px); }
-    .screen-head { font-size: 20px; font-weight: 900; letter-spacing: 0.18em; color: #efeaff;
+    .screen-head { font-family: 'Fredoka', 'Nunito', system-ui, sans-serif;
+      font-size: 20px; font-weight: 900; letter-spacing: 0.18em; color: #efeaff;
       text-shadow: 0 2px 12px rgba(127,90,240,0.5); }
     .mode-toggle { display: flex; gap: 8px; background: rgba(35,34,68,0.6); border-radius: 999px; padding: 5px;
       border: 1px solid rgba(127,90,240,0.3); }
@@ -178,7 +210,8 @@
     }
     .overlay.active { display: flex; animation: overlayIn .32s cubic-bezier(0.2,1.4,0.4,1); }
     @keyframes overlayIn { 0% { opacity: 0; transform: scale(0.86); } 100% { opacity: 1; transform: scale(1); } }
-    .overlay-title { font-size: clamp(34px, 9.5vw, 46px); font-weight: 900; letter-spacing: 0.08em; }
+    .overlay-title { font-family: 'Fredoka', 'Nunito', system-ui, sans-serif;
+      font-size: clamp(34px, 9.5vw, 46px); font-weight: 900; letter-spacing: 0.08em; }
     #win-overlay .overlay-title { color: var(--gold); text-shadow: 0 0 30px rgba(255,216,3,0.5); }
     #lose-overlay .overlay-title { color: var(--accent); text-shadow: 0 0 30px rgba(255,110,108,0.5); }
     .star-display { font-size: clamp(38px, 11vw, 50px); display: flex; gap: 12px; justify-content: center; }
