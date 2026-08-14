@@ -55,10 +55,62 @@
       height: 100%;
     }
     canvas { display: block; }
+    /* Boot splash (fleet template, JEE-216) — painted from raw HTML/CSS before
+       the JS bundle executes; removed on the first rendered frame by main.js.
+       Background matches the page's dusk-ember gradient (plus a soft amber
+       glow), so removal has zero flash. */
+    #boot {
+      position: fixed; inset: 0; z-index: 200;
+      display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 18px;
+      background:
+        radial-gradient(ellipse at 50% 36%, rgba(242,162,89,0.10) 0%, transparent 62%),
+        linear-gradient(180deg, #2d2338 0%, #150f1e 78%);
+      font-family: 'Fredoka', 'Nunito', system-ui, sans-serif;
+      animation: g2048-boot-in 0.25s ease-out;
+    }
+    #boot .boot-icon {
+      width: 72px; height: 72px;
+      filter: drop-shadow(0 0 18px rgba(252,192,42,0.5));
+    }
+    #boot .boot-title {
+      font-size: clamp(24px, 7vw, 32px); font-weight: 600; letter-spacing: 0.02em; color: #ffd166;
+      text-shadow: 0 2px 0 rgba(60,36,10,0.55), 0 0 24px rgba(252,192,42,0.4);
+    }
+    #boot .boot-dots { display: flex; gap: 8px; }
+    #boot .boot-dots span {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: #ffd166;
+      animation: g2048-boot-dot 1s ease-in-out infinite;
+    }
+    #boot .boot-dots span:nth-child(2) { animation-delay: 0.15s; background: #f9643e; }
+    #boot .boot-dots span:nth-child(3) { animation-delay: 0.3s; background: #8b5cf6; }
+    @keyframes g2048-boot-dot {
+      0%, 100% { transform: scale(0.6); opacity: 0.4; }
+      50% { transform: scale(1); opacity: 1; }
+    }
+    @keyframes g2048-boot-in { from { opacity: 0; } }
   </style>
-  <script type="module" crossorigin src="./assets/index-u0WiCRUI.js"></script>
+  <script type="module" crossorigin src="./assets/index-DXQ5d2Ki.js"></script>
 </head>
 <body>
+  <!-- Boot splash (JEE-216): inline SVG + CSS only, no JS — removed by main.js on first rendered frame. -->
+  <div id="boot" aria-hidden="true">
+    <svg class="boot-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
+      <defs>
+        <linearGradient id="boot-tile" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#fcc02a" />
+          <stop offset="1" stop-color="#f59a10" />
+        </linearGradient>
+      </defs>
+      <rect x="4" y="4" width="40" height="40" rx="8" fill="url(#boot-tile)" />
+      <ellipse cx="24" cy="14" rx="15" ry="7" fill="#ffffff" opacity="0.18" />
+      <text x="24" y="29.5" text-anchor="middle"
+            font-family="'Fredoka', 'Nunito', system-ui, sans-serif"
+            font-size="14" font-weight="600" fill="#fffdf5">2048</text>
+    </svg>
+    <div class="boot-title">2048</div>
+    <div class="boot-dots"><span></span><span></span><span></span></div>
+  </div>
   <div id="game-container"></div>
 </body>
 </html>
