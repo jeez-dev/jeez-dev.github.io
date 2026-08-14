@@ -2,21 +2,141 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
   <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
-  <meta name="theme-color" content="#1a1a2e" />
+  <meta name="theme-color" content="#232045" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="mobile-web-app-capable" content="yes" />
   <title>Stack Tower — jeez.games</title>
   <style>
+    @font-face {
+      font-family: 'Fredoka';
+      src: url('fonts/fredoka-600.woff2') format('woff2');
+      font-weight: 600;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'Nunito';
+      src: url('fonts/nunito-700.woff2') format('woff2');
+      font-weight: 700;
+      font-display: swap;
+    }
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    html, body { width: 100%; height: 100%; overflow: hidden; background: #1a1a2e; }
-    #game-container { width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; }
-    canvas { display: block; }
+    html, body { width: 100%; height: 100%; overflow: hidden; background: #232045; }
+    body { font-family: 'Nunito', 'Fredoka', system-ui, sans-serif; -webkit-user-select: none; user-select: none; }
+    #game-container { position: fixed; inset: 0; touch-action: none; }
+    #game-container canvas { width: 100% !important; height: 100% !important; display: block; }
+
+    /* cinematic vignette over the 3D scene (DOM, zero GPU cost) */
+    #vignette {
+      position: fixed; inset: 0; pointer-events: none; z-index: 10;
+      background:
+        radial-gradient(120% 90% at 50% 38%, rgba(0,0,0,0) 55%, rgba(9,7,26,0.42) 100%),
+        linear-gradient(180deg, rgba(9,7,26,0.25) 0%, rgba(0,0,0,0) 14%);
+    }
+
+    /* ---------- HUD ---------- */
+    #hud {
+      position: fixed; top: max(16px, env(safe-area-inset-top)); left: 0; right: 0;
+      display: none; z-index: 20; pointer-events: none; text-align: center;
+    }
+    #hud.active { display: block; }
+    #hud-score {
+      font-family: 'Fredoka', system-ui, sans-serif;
+      font-size: 54px; font-weight: 600; color: #fff; line-height: 1;
+      text-shadow: 0 2px 0 rgba(0,0,0,0.22), 0 0 14px rgba(0,0,0,0.2);
+      transition: transform 0.08s ease-out;
+    }
+    #hud-score.pop { transform: scale(1.14); }
+    #hud-combo {
+      display: inline-block; margin-top: 8px; padding: 4px 14px; border-radius: 999px;
+      font-family: 'Fredoka', system-ui, sans-serif; font-size: 17px; letter-spacing: 0.06em;
+      color: #2a2000; background: linear-gradient(180deg, #ffe08a, #ffb830);
+      box-shadow: 0 2px 10px rgba(255, 184, 48, 0.45);
+      opacity: 0; transform: translateY(-6px) scale(0.9);
+      transition: opacity 0.18s, transform 0.18s;
+    }
+    #hud-combo.show { opacity: 1; transform: translateY(0) scale(1); }
+
+    /* floating PERFECT! labels positioned in world space by game.js */
+    #float-layer { position: fixed; inset: 0; pointer-events: none; z-index: 19; overflow: hidden; }
+    .float-label {
+      position: absolute; transform: translate(-50%, -50%);
+      font-family: 'Fredoka', system-ui, sans-serif; white-space: nowrap;
+      color: #ffe9a8; font-size: 26px; letter-spacing: 0.08em;
+      text-shadow: 0 2px 0 rgba(0,0,0,0.3), 0 0 18px rgba(255, 190, 60, 0.55);
+      animation: float-up 0.85s cubic-bezier(0.2, 0.7, 0.3, 1) forwards;
+    }
+    .float-label.perfect { color: #ffe9a8; }
+    @keyframes float-up {
+      0% { opacity: 0; margin-top: 8px; transform: translate(-50%, -50%) scale(0.6); }
+      18% { opacity: 1; transform: translate(-50%, -50%) scale(1.08); }
+      100% { opacity: 0; margin-top: -56px; transform: translate(-50%, -50%) scale(1); }
+    }
+
+    /* ---------- overlay screens ---------- */
+    .screen {
+      position: fixed; inset: 0; z-index: 30;
+      display: none; flex-direction: column; align-items: center; justify-content: center;
+      text-align: center; padding: 24px;
+    }
+    .screen.active { display: flex; }
+    .screen .title {
+      font-family: 'Fredoka', system-ui, sans-serif;
+      font-weight: 600; letter-spacing: 0.05em; color: #fff;
+      font-size: clamp(40px, 12vw, 72px); line-height: 1.05;
+      text-shadow: 0 3px 0 rgba(0,0,0,0.22), 0 6px 26px rgba(0,0,0,0.3);
+    }
+    .screen .sub {
+      margin-top: 6px; color: #fff; opacity: 0.85; font-size: 16px; letter-spacing: 0.12em;
+      text-shadow: 0 1px 0 rgba(0,0,0,0.25);
+    }
+    .cta {
+      margin-top: 42px;
+      font-family: 'Fredoka', system-ui, sans-serif;
+      color: #ffd76a; font-size: clamp(20px, 6vw, 30px); letter-spacing: 0.1em;
+      text-shadow: 0 2px 0 rgba(0,0,0,0.32), 0 0 16px rgba(255, 200, 80, 0.3);
+      animation: cta-pulse 0.95s ease-in-out infinite;
+    }
+    @keyframes cta-pulse { 50% { opacity: 0.42; } }
+    .best { margin-top: 26px; color: #fff; opacity: 0.9; font-size: 16px; letter-spacing: 0.08em;
+      text-shadow: 0 1px 0 rgba(0,0,0,0.25); }
+
+    #screen-menu { background: linear-gradient(180deg, rgba(24,18,52,0.0) 42%, rgba(24,18,52,0.42) 100%); }
+
+    #screen-over { background: rgba(14, 11, 34, 0.62); backdrop-filter: blur(2px); }
+    #screen-over .title { color: #ff8a7a; }
+    #over-score {
+      margin-top: 6px; font-family: 'Fredoka', system-ui, sans-serif;
+      font-size: clamp(56px, 18vw, 96px); color: #fff; line-height: 1.1;
+      text-shadow: 0 3px 0 rgba(0,0,0,0.25);
+    }
+    #over-tag { margin-top: 2px; font-size: 17px; letter-spacing: 0.14em; color: #e8e4f5; }
+    #over-tag.newbest { color: #ffd76a; }
+    #over-best { margin-top: 14px; color: #b9b4cc; font-size: 15px; letter-spacing: 0.1em; }
   </style>
-  <script type="module" crossorigin src="./assets/index-ClHGR9HN.js"></script>
+  <script type="module" crossorigin src="./assets/index-TYDK4imj.js"></script>
 </head>
 <body>
   <div id="game-container"></div>
+  <div id="vignette"></div>
+  <div id="float-layer"></div>
+  <div id="hud">
+    <div id="hud-score">0</div>
+    <div><span id="hud-combo"></span></div>
+  </div>
+  <div id="screen-menu" class="screen">
+    <h1 class="title">STACK TOWER</h1>
+    <p class="sub">by jeez.games</p>
+    <p class="cta">TAP TO START</p>
+    <p id="menu-best" class="best"></p>
+  </div>
+  <div id="screen-over" class="screen">
+    <h2 class="title">GAME OVER</h2>
+    <p id="over-score">0</p>
+    <p id="over-tag"></p>
+    <p id="over-best"></p>
+    <p class="cta">TAP TO RETRY</p>
+  </div>
 </body>
 </html>
