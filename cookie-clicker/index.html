@@ -31,6 +31,41 @@
     }
     .hidden { display: none !important; }
 
+    /* Boot splash (fleet template, JEE-217) — painted from raw HTML/CSS before
+       the JS bundle executes; removed on the first rendered frame by main.ts.
+       Background matches the page bg + a warm bakery glow, so removal has
+       zero flash. */
+    #boot {
+      position: fixed; inset: 0; z-index: 200;
+      display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 18px;
+      background:
+        radial-gradient(ellipse at 50% 32%, rgba(255,196,107,0.13) 0%, transparent 70%),
+        #241610;
+      font-family: 'Fredoka', 'Nunito', system-ui, sans-serif;
+      animation: cc-boot-in 0.25s ease-out;
+    }
+    #boot .boot-icon {
+      width: 72px; height: 72px;
+      filter: drop-shadow(0 0 18px rgba(255,170,60,0.5));
+    }
+    #boot .boot-title {
+      font-size: clamp(24px, 7vw, 32px); font-weight: 600; letter-spacing: 0.02em; color: #ffd98f;
+      text-shadow: 0 2px 0 rgba(90,50,10,0.55), 0 0 24px rgba(255,170,60,0.4);
+    }
+    #boot .boot-dots { display: flex; gap: 8px; }
+    #boot .boot-dots span {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: #ffc46b;
+      animation: cc-boot-dot 1s ease-in-out infinite;
+    }
+    #boot .boot-dots span:nth-child(2) { animation-delay: 0.15s; background: #f0bd7f; }
+    #boot .boot-dots span:nth-child(3) { animation-delay: 0.3s; background: #d8b489; }
+    @keyframes cc-boot-dot {
+      0%, 100% { transform: scale(0.6); opacity: 0.4; }
+      50% { transform: scale(1); opacity: 1; }
+    }
+    @keyframes cc-boot-in { from { opacity: 0; } }
+
     #app { display: flex; flex-direction: column; height: 100%; }
 
     /* ---------- header HUD ---------- */
@@ -190,9 +225,36 @@
       #per-tap-badge { bottom: 8px; }
     }
   </style>
-  <script type="module" crossorigin src="./assets/index-DUMJIQsU.js"></script>
+  <script type="module" crossorigin src="./assets/index-2ANHZeNR.js"></script>
 </head>
 <body>
+  <!-- Boot splash (JEE-217): inline SVG + CSS only, no JS — removed by main.ts on first rendered frame. -->
+  <div id="boot" aria-hidden="true">
+    <svg class="boot-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
+      <defs>
+        <mask id="boot-bite">
+          <rect width="48" height="48" fill="#fff" />
+          <circle cx="40.5" cy="11.5" r="7" fill="#000" />
+          <circle cx="42" cy="17" r="4.5" fill="#000" />
+        </mask>
+      </defs>
+      <g mask="url(#boot-bite)">
+        <circle cx="24" cy="24" r="17" fill="#d99a4e" />
+        <ellipse cx="19" cy="18" rx="8" ry="6.5" fill="#f0bd7f" opacity="0.4" />
+        <circle cx="17" cy="19" r="2.6" fill="#59320f" />
+        <circle cx="28" cy="15" r="2.2" fill="#59320f" />
+        <circle cx="13" cy="28" r="2.3" fill="#59320f" />
+        <circle cx="24" cy="29" r="2.7" fill="#59320f" />
+        <circle cx="30" cy="24" r="1.8" fill="#59320f" />
+        <circle cx="20" cy="35" r="2.1" fill="#59320f" />
+        <circle cx="31" cy="33" r="2.3" fill="#59320f" />
+        <circle cx="24" cy="24" r="17" fill="none" stroke="#8a5520" stroke-width="2.4" />
+      </g>
+    </svg>
+    <div class="boot-title">Cookie Clicker</div>
+    <div class="boot-dots"><span></span><span></span><span></span></div>
+  </div>
+
   <div id="app">
     <header id="hud">
       <div id="hud-logo" aria-hidden="true">🍪</div>
