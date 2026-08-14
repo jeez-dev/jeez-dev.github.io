@@ -1,0 +1,13 @@
+{
+  "name": "Stack Tower — jeez.games",
+  "short_name": "Stack Tower",
+  "description": "Stack Tower — hypercasual stacking game by jeez.games. Tap to drop the block; don't overhang.",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#232045",
+  "theme_color": "#232045",
+  "icons": [
+    { "src": "./icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "./icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" }
+  ]
+}

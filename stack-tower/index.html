@@ -4,9 +4,12 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
   <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
+  <link rel="manifest" href="./site.webmanifest" />
+  <link rel="apple-touch-icon" href="./apple-touch-icon.png" />
   <meta name="theme-color" content="#232045" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-title" content="Stack Tower" />
   <title>Stack Tower — jeez.games</title>
   <style>
     @font-face {
@@ -60,6 +63,13 @@
       transition: transform 0.08s ease-out;
     }
     #hud-score.pop { transform: scale(1.14); }
+    #hud-height {
+      margin-top: 5px;
+      font-family: 'Fredoka', 'Nunito', system-ui, sans-serif;
+      font-size: 16px; font-weight: 600; letter-spacing: 0.14em;
+      color: #fff; opacity: 0.82;
+      text-shadow: 0 1px 0 rgba(0,0,0,0.25);
+    }
     #hud-combo {
       display: inline-block; margin-top: 8px; padding: 4px 14px; border-radius: 999px;
       font-family: 'Fredoka', 'Nunito', system-ui, sans-serif; font-size: 17px; letter-spacing: 0.06em;
@@ -77,20 +87,26 @@
       font-family: 'Fredoka', 'Nunito', system-ui, sans-serif; white-space: nowrap;
       color: #ffe9a8; font-size: 26px; letter-spacing: 0.08em;
       text-shadow: 0 2px 0 rgba(0,0,0,0.3), 0 0 18px rgba(255, 190, 60, 0.55);
+      will-change: transform, opacity;
       animation: float-up 0.85s cubic-bezier(0.2, 0.7, 0.3, 1) forwards;
     }
     .float-label.perfect { color: #ffe9a8; }
+    /* transform/opacity-only (fleet perf rule): vertical travel via translateY,
+       never margin-top, so the HUD layer never triggers layout. */
     @keyframes float-up {
-      0% { opacity: 0; margin-top: 8px; transform: translate(-50%, -50%) scale(0.6); }
+      0% { opacity: 0; transform: translate(-50%, calc(-50% + 8px)) scale(0.6); }
       18% { opacity: 1; transform: translate(-50%, -50%) scale(1.08); }
-      100% { opacity: 0; margin-top: -56px; transform: translate(-50%, -50%) scale(1); }
+      100% { opacity: 0; transform: translate(-50%, calc(-50% - 56px)) scale(1); }
     }
 
     /* ---------- overlay screens ---------- */
     .screen {
       position: fixed; inset: 0; z-index: 30;
       display: none; flex-direction: column; align-items: center; justify-content: center;
-      text-align: center; padding: 24px;
+      text-align: center;
+      /* safe-area-aware so chrome never collides with notch / home indicator */
+      padding: max(24px, env(safe-area-inset-top)) max(24px, env(safe-area-inset-right))
+               max(24px, env(safe-area-inset-bottom)) max(24px, env(safe-area-inset-left));
     }
     .screen.active { display: flex; }
     .screen .title {
@@ -111,6 +127,23 @@
       animation: cta-pulse 0.95s ease-in-out infinite;
     }
     @keyframes cta-pulse { 50% { opacity: 0.42; } }
+    .howto {
+      margin-top: 14px; font-size: 18px; font-weight: 700; letter-spacing: 0.1em;
+      color: #e8e4f5; opacity: 0.95; text-shadow: 0 1px 0 rgba(0,0,0,0.25);
+    }
+    /* Restart affordance on game-over: a real <button> styled as the primary
+       action pill. Tap-anywhere still retries; the button just names it.
+       Only transform/opacity animate (fleet perf rule). */
+    .cta-button {
+      appearance: none; border: 0; cursor: pointer;
+      margin-top: 40px; padding: 16px 44px; border-radius: 999px;
+      font-family: 'Fredoka', 'Nunito', system-ui, sans-serif;
+      font-size: clamp(20px, 5.5vw, 26px); font-weight: 600; letter-spacing: 0.12em;
+      color: #2a2000; background: linear-gradient(180deg, #ffe08a, #ffb830);
+      box-shadow: 0 4px 18px rgba(255, 184, 48, 0.45), 0 2px 0 rgba(0,0,0,0.18);
+    }
+    .cta-button:active { transform: scale(0.96); }
+    .cta-button:focus-visible { outline: 3px solid #fff; outline-offset: 3px; }
     .best { margin-top: 26px; color: #fff; opacity: 0.9; font-size: 16px; letter-spacing: 0.08em;
       text-shadow: 0 1px 0 rgba(0,0,0,0.25); }
 
@@ -125,6 +158,11 @@
     }
     #over-tag { margin-top: 2px; font-size: 17px; letter-spacing: 0.14em; color: #e8e4f5; }
     #over-tag.newbest { color: #ffd76a; }
+    #over-height {
+      margin-top: 16px; font-family: 'Fredoka', 'Nunito', system-ui, sans-serif;
+      font-size: 18px; font-weight: 600; letter-spacing: 0.16em; color: #fff;
+      opacity: 0.9; text-shadow: 0 1px 0 rgba(0,0,0,0.25);
+    }
     #over-best { margin-top: 14px; color: #b9b4cc; font-size: 15px; letter-spacing: 0.1em; }
 
     /* Boot splash (fleet template, JEE-220) — inline markup+CSS paints before the
@@ -159,7 +197,7 @@
     }
     @keyframes boot-in { from { opacity: 0; } }
   </style>
-  <script type="module" crossorigin src="./assets/index-MkPoXmab.js"></script>
+  <script type="module" crossorigin src="./assets/index-BGjJZQRb.js"></script>
 </head>
 <body>
   <div id="boot" aria-hidden="true">
@@ -177,10 +215,12 @@
   <div id="float-layer"></div>
   <div id="hud">
     <div id="hud-score">0</div>
+    <div id="hud-height">HEIGHT 0</div>
     <div><span id="hud-combo"></span></div>
   </div>
   <div id="screen-menu" class="screen">
     <h1 class="title">STACK TOWER</h1>
+    <p class="howto">TAP TO DROP THE BLOCK</p>
     <p class="sub">by jeez.games</p>
     <p class="cta">TAP TO START</p>
     <p id="menu-best" class="best"></p>
@@ -189,8 +229,9 @@
     <h2 class="title">GAME OVER</h2>
     <p id="over-score">0</p>
     <p id="over-tag"></p>
+    <p id="over-height">HEIGHT 0</p>
     <p id="over-best"></p>
-    <p class="cta">TAP TO RETRY</p>
+    <button type="button" class="cta-button" aria-label="Restart">RETRY</button>
   </div>
 </body>
 </html>
