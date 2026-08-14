@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no" />
+    <meta name="theme-color" content="#141033" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="Jelly Fling" />
+    <meta
+      name="description"
+      content="Jelly Fling — drag back, release, and fling a squishy jelly through hazard-packed physics courses. Portrait flinger by jeez.games."
+    />
+    <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="./apple-touch-icon.png" />
+    <link rel="manifest" href="./manifest.webmanifest" />
+    <!-- Bundled fleet fonts (JEE-203 pattern): self-hosted Fredoka 600 + Nunito 400/700/800. -->
+    <link rel="preload" href="./fonts/fredoka-600.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="./fonts/nunito-400.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="./fonts/nunito-700.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="./fonts/nunito-800.woff2" as="font" type="font/woff2" crossorigin />
+    <style>
+      @font-face {
+        font-family: 'Fredoka';
+        font-weight: 600;
+        font-style: normal;
+        font-display: swap;
+        src: url('./fonts/fredoka-600.woff2') format('woff2');
+      }
+      @font-face {
+        font-family: 'Nunito';
+        font-weight: 400;
+        font-style: normal;
+        font-display: swap;
+        src: url('./fonts/nunito-400.woff2') format('woff2');
+      }
+      @font-face {
+        font-family: 'Nunito';
+        font-weight: 700;
+        font-style: normal;
+        font-display: swap;
+        src: url('./fonts/nunito-700.woff2') format('woff2');
+      }
+      @font-face {
+        font-family: 'Nunito';
+        font-weight: 800;
+        font-style: normal;
+        font-display: swap;
+        src: url('./fonts/nunito-800.woff2') format('woff2');
+      }
+      /* Boot splash (fleet Water Sort pattern, JEE-225): paints inline before the
+         JS bundle executes; main.ts removes #boot on the first rendered frame.
+         Background = the in-game sky gradient so removal flashes zero. */
+      #boot {
+        position: fixed;
+        inset: 0;
+        z-index: 20;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 18px;
+        background: linear-gradient(180deg, #2b2358 0%, #191338 46%, #0b081f 100%);
+        color: #8be04e;
+        font-family: 'Fredoka', 'Nunito', system-ui, sans-serif;
+        animation: jf-boot-in 0.25s ease-out;
+      }
+      #boot .boot-icon {
+        width: 76px;
+        height: 76px;
+        filter: drop-shadow(0 0 18px rgba(139, 224, 78, 0.45));
+      }
+      #boot .boot-title {
+        font-size: 32px;
+        font-weight: 600;
+        letter-spacing: 0.06em;
+        color: #ffffff;
+        text-shadow: 0 0 22px rgba(139, 224, 78, 0.4);
+      }
+      #boot .boot-title span {
+        color: #ffd23f;
+        text-shadow: 0 0 22px rgba(255, 210, 63, 0.4);
+      }
+      #boot .boot-dots {
+        display: flex;
+        gap: 8px;
+      }
+      #boot .boot-dots span {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: #8be04e;
+        animation: jf-boot-dot 1s ease-in-out infinite;
+      }
+      #boot .boot-dots span:nth-child(2) {
+        animation-delay: 0.15s;
+        background: #ff6fa5;
+      }
+      #boot .boot-dots span:nth-child(3) {
+        animation-delay: 0.3s;
+        background: #ffd23f;
+      }
+      @keyframes jf-boot-dot {
+        0%,
+        100% {
+          transform: scale(0.6);
+          opacity: 0.4;
+        }
+        50% {
+          transform: scale(1);
+          opacity: 1;
+        }
+      }
+      @keyframes jf-boot-in {
+        from {
+          opacity: 0;
+        }
+      }
+      /* Critical shell only — full styles in src/game/style.css (bundled by Vite). */
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        background: #0b081f;
+        overscroll-behavior: none;
+        -webkit-tap-highlight-color: transparent;
+        -webkit-user-select: none;
+        user-select: none;
+      }
+      #app {
+        position: relative;
+        width: 100%;
+        height: 100%;
+      }
+      #app canvas {
+        display: block;
+        touch-action: none;
+        position: absolute;
+        inset: 0;
+      }
+    </style>
+    <script type="module" crossorigin src="./assets/index-DTgPyHqs.js"></script>
+    <link rel="stylesheet" crossorigin href="./assets/index-CZo99CVp.css">
+  </head>
+  <body>
+    <div id="app">
+      <div id="boot" aria-hidden="true">
+        <svg class="boot-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+          <path
+            fill="currentColor"
+            d="M32 6c-11 0-20 9.4-20 21 0 12.6 7.4 22 13.2 27.4 1.9 1.8 4.6 2.6 6.8 2.6s4.9-.8 6.8-2.6C44.6 49 52 39.6 52 27 52 15.4 43 6 32 6Z"
+          />
+          <ellipse cx="24.5" cy="20" rx="5" ry="7" fill="#ffffff" opacity="0.35" transform="rotate(-18 24.5 20)" />
+          <circle cx="25.5" cy="30" r="3.1" fill="#141033" />
+          <circle cx="38.5" cy="30" r="3.1" fill="#141033" />
+          <path
+            d="M27 38.5c1.6 2 8.4 2 10 0"
+            fill="none"
+            stroke="#141033"
+            stroke-width="2.4"
+            stroke-linecap="round"
+          />
+        </svg>
+        <div class="boot-title">JELLY <span>FLING</span></div>
+        <div class="boot-dots"><span></span><span></span><span></span></div>
+      </div>
+    </div>
+  </body>
+</html>
