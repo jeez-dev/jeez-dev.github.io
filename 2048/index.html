@@ -89,8 +89,190 @@
       50% { transform: scale(1); opacity: 1; }
     }
     @keyframes g2048-boot-in { from { opacity: 0; } }
+
+    /* ================= fleet chrome (JEE-239) =================
+       DOM layer over the canvas: HUD + start menu + game-over + win overlays.
+       Fleet pattern (crossy-road): #hud, .screen.active, Fredoka titles with
+       text-shadow, gradient+pulse CTA. Palette: dusk-ember (JEE-161 theme).
+       Hidden chrome is display:none — nothing invisible ever blocks canvas. */
+
+    #hud {
+      position: fixed;
+      top: max(12px, env(safe-area-inset-top));
+      left: 50%;
+      transform: translateX(-50%);
+      display: none;                 /* .active flips to flex */
+      gap: 10px;
+      z-index: 20;
+      pointer-events: none;          /* HUD is display-only; zero event capture */
+    }
+    #hud.active { display: flex; }
+    .hud-pill {
+      min-width: 96px;
+      padding: 7px 14px 9px;
+      text-align: center;
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.09);
+      border: 1px solid rgba(255, 255, 255, 0.13);
+      box-shadow: 0 4px 18px rgba(0, 0, 0, 0.35);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+    }
+    .hud-label {
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.14em;
+      color: rgba(244, 237, 227, 0.62);
+    }
+    .hud-value {
+      font-family: 'Fredoka', 'Nunito', system-ui, sans-serif;
+      font-size: 24px;
+      font-weight: 600;
+      line-height: 1.15;
+      color: #f4ede3;
+      text-shadow: 0 2px 0 rgba(0, 0, 0, 0.35);
+    }
+    .hud-pill.bump .hud-value {
+      animation: hud-bump 0.28s ease-out;
+    }
+    @keyframes hud-bump {
+      40% { transform: scale(1.22); }
+    }
+
+    .screen {
+      position: fixed;
+      inset: 0;
+      z-index: 30;
+      display: none;                 /* .active flips to flex — pointer capture */
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 24px;
+      padding-top: calc(24px + env(safe-area-inset-top));
+      padding-bottom: calc(24px + env(safe-area-inset-bottom));
+    }
+    .screen.active {
+      display: flex;
+      animation: screen-in 0.24s ease-out;
+    }
+    @keyframes screen-in {
+      from { opacity: 0; transform: scale(1.03); }
+    }
+    .screen .title {
+      font-family: 'Fredoka', 'Nunito', system-ui, sans-serif;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      color: #ffd166;
+      font-size: clamp(52px, 16vw, 88px);
+      line-height: 1.05;
+      text-shadow: 0 3px 0 rgba(60, 36, 10, 0.55), 0 8px 28px rgba(0, 0, 0, 0.35);
+    }
+    .screen .sub {
+      margin-top: 10px;
+      color: #f6f1e7;
+      opacity: 0.85;
+      font-size: 16px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-shadow: 0 1px 0 rgba(0, 0, 0, 0.3);
+    }
+    .cta {
+      margin-top: 40px;
+      border: 0;
+      cursor: pointer;
+      font-family: 'Fredoka', 'Nunito', system-ui, sans-serif;
+      font-weight: 600;
+      font-size: clamp(19px, 5.5vw, 26px);
+      letter-spacing: 0.1em;
+      color: #3a2305;
+      padding: 15px 44px;
+      border-radius: 999px;
+      background: linear-gradient(180deg, #f7b955 0%, #eb8a1d 100%);
+      box-shadow: 0 6px 0 #a35c10, 0 12px 30px rgba(0, 0, 0, 0.45);
+      text-shadow: 0 1px 0 rgba(255, 255, 255, 0.35);
+      animation: cta-pulse 1.6s ease-in-out infinite;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .cta:active {
+      transform: translateY(3px);
+      box-shadow: 0 3px 0 #a35c10, 0 8px 20px rgba(0, 0, 0, 0.4);
+      animation: none;
+    }
+    /* Pulse = opacity + glow only (fleet pattern: crossy-road pulses opacity).
+       No transform — a forever-scaling CTA never goes "stable" for automation
+       and hurts text crispness. */
+    @keyframes cta-pulse {
+      50% { opacity: 0.8; box-shadow: 0 6px 0 #a35c10, 0 0 34px rgba(247, 185, 85, 0.55); }
+    }
+    .cta.secondary {
+      margin-top: 16px;
+      font-size: clamp(15px, 4.2vw, 19px);
+      padding: 12px 34px;
+      color: #f4ede3;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35);
+      text-shadow: 0 1px 0 rgba(0, 0, 0, 0.3);
+      animation: none;
+    }
+    .best-line {
+      margin-top: 26px;
+      color: #f6f1e7;
+      opacity: 0.9;
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-shadow: 0 1px 0 rgba(0, 0, 0, 0.3);
+    }
+
+    /* start menu: canvas stays visible as a dimmed live backdrop */
+    #screen-menu {
+      background: linear-gradient(180deg, rgba(21, 15, 30, 0.25) 0%, rgba(21, 15, 30, 0.72) 100%);
+    }
+
+    /* game over: nearly-opaque focus state */
+    #screen-over {
+      background: rgba(21, 15, 30, 0.68);
+      backdrop-filter: blur(2px);
+      -webkit-backdrop-filter: blur(2px);
+    }
+    #screen-over .title { color: #fb8465; font-size: clamp(40px, 12vw, 64px); }
+    #over-score {
+      margin-top: 8px;
+      font-family: 'Fredoka', 'Nunito', system-ui, sans-serif;
+      font-weight: 600;
+      font-size: clamp(58px, 19vw, 100px);
+      line-height: 1.1;
+      color: #fffdf5;
+      text-shadow: 0 3px 0 rgba(0, 0, 0, 0.3), 0 0 30px rgba(255, 209, 102, 0.25);
+    }
+    #over-tag {
+      margin-top: 2px;
+      font-size: 17px;
+      font-weight: 800;
+      letter-spacing: 0.14em;
+      color: rgba(244, 237, 227, 0.62);
+    }
+    #over-tag.newbest { color: #ffd166; text-shadow: 0 0 18px rgba(255, 209, 102, 0.45); }
+
+    /* win: same glass, gold glow behind */
+    #screen-win {
+      background: rgba(21, 15, 30, 0.68);
+      backdrop-filter: blur(2px);
+      -webkit-backdrop-filter: blur(2px);
+    }
+    #screen-win::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at 50% 40%, rgba(255, 209, 102, 0.22) 0%, transparent 60%);
+      pointer-events: none;
+    }
+    #screen-win .title { font-size: clamp(44px, 13vw, 72px); }
+    #screen-win > * { position: relative; }
   </style>
-  <script type="module" crossorigin src="./assets/index-DXQ5d2Ki.js"></script>
+  <script type="module" crossorigin src="./assets/index-CYb2_Mz7.js"></script>
 </head>
 <body>
   <!-- Boot splash (JEE-216): inline SVG + CSS only, no JS — removed by main.js on first rendered frame. -->
@@ -112,5 +294,44 @@
     <div class="boot-dots"><span></span><span></span><span></span></div>
   </div>
   <div id="game-container"></div>
+
+  <!-- Fleet chrome (JEE-239). Hidden layers are display:none (see .screen/#hud
+       rules), so inactive chrome can never eat canvas input (JEE-61/JEE-65).
+       The menu ships active in markup as a resilient default; ui-overlay.js
+       owns all state transitions once the bundle runs. -->
+  <div id="hud" aria-hidden="true">
+    <div class="hud-pill" id="hud-score-pill">
+      <div class="hud-label">SCORE</div>
+      <div class="hud-value" id="hud-score">0</div>
+    </div>
+    <div class="hud-pill" id="hud-best-pill">
+      <div class="hud-label">BEST</div>
+      <div class="hud-value" id="hud-best">0</div>
+    </div>
+  </div>
+
+  <div id="screen-menu" class="screen active" role="dialog" aria-modal="true" aria-label="2048 start menu">
+    <h1 class="title">2048</h1>
+    <p class="sub">Swipe or use arrow keys &mdash; merge tiles and reach 2048!</p>
+    <button class="cta" id="btn-start" type="button">TAP TO START</button>
+    <p class="best-line" id="menu-best"></p>
+  </div>
+
+  <div id="screen-over" class="screen" role="dialog" aria-modal="true" aria-label="Game over">
+    <h2 class="title">GAME OVER</h2>
+    <p id="over-score">0</p>
+    <p id="over-tag"></p>
+    <p class="best-line" id="over-best"></p>
+    <button class="cta" id="btn-retry" type="button">TAP TO RETRY</button>
+  </div>
+
+  <div id="screen-win" class="screen" role="dialog" aria-modal="true" aria-label="You win">
+    <h2 class="title">YOU WIN!</h2>
+    <p class="sub">You made the 2048 tile &mdash; congrats!</p>
+    <p class="best-line" id="win-score"></p>
+    <button class="cta" id="btn-keep-playing" type="button">KEEP PLAYING</button>
+    <button class="cta secondary" id="btn-win-retry" type="button">RETRY</button>
+  </div>
+
 </body>
 </html>
