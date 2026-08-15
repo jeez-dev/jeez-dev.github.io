@@ -4144,7 +4144,7 @@ void main() {
   </div>
   <div class="scenery" aria-hidden="true"></div>
   <div class="dock">
-    <button id="seeds-btn" class="dock-btn seed-chip"></button>
+    <button id="seeds-btn" class="dock-btn"></button>
   </div>
   <div id="picker" class="sheet hidden" role="dialog" aria-modal="true" aria-label="Seed picker">
     <div class="sheet-card">
