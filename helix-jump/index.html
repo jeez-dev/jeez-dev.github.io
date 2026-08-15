@@ -61,6 +61,11 @@
         radial-gradient(ellipse 120% 90% at 50% 45%, transparent 55%, rgba(4,7,18,0.55) 100%),
         linear-gradient(180deg, rgba(4,7,18,0.5) 0%, transparent 14%, transparent 84%, rgba(4,7,18,0.62) 100%);
     }
+    #vignette::after {
+      content: ''; position: absolute; inset: 0;
+      background: radial-gradient(ellipse 100% 80% at 50% 50%, rgba(255,45,85,0.55) 0%, transparent 70%);
+      opacity: 0; will-change: opacity;
+    }
 
     /* ---------- HUD ---------- */
     #hud {
@@ -141,14 +146,14 @@
     }
     @keyframes hj-boot-in { from { opacity: 0; } }
 
-    /* danger screen flash */
-    body.flash-danger #vignette {
+    /* danger screen flash — opacity-only (fleet perf rule) */
+    body.flash-danger #vignette::after {
       animation: dangerFlash 0.32s ease-out;
     }
     @keyframes dangerFlash {
-      0% { box-shadow: inset 0 0 0 999px rgba(255,45,85,0); }
-      25% { box-shadow: inset 0 0 120px 40px rgba(255,45,85,0.55); }
-      100% { box-shadow: inset 0 0 0 999px rgba(255,45,85,0); }
+      0%   { opacity: 0; }
+      25%  { opacity: 1; }
+      100% { opacity: 0; }
     }
 
     /* ---------- overlays ---------- */
