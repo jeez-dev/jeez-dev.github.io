@@ -7,12 +7,14 @@
     <style>
       html, body { margin: 0; padding: 0; background: #0b0e10; height: 100%; overflow: hidden; }
       canvas { display: block; width: 100vw; height: 100vh; image-rendering: pixelated; }
+      /* JEE-478: keep the boot note clear of the canvas HUD debug row — right-aligned,
+         above the bottom 24px HUD band (was bottom-center: collided with the row at 16:10). */
       #boot-note {
-        position: fixed; inset: auto 0 8px 0; text-align: center; color: #4a5560;
+        position: fixed; inset: auto 8px 30px auto; text-align: right; color: #4a5560;
         font: 12px/1.2 ui-monospace, Menlo, Consolas, monospace; pointer-events: none;
       }
     </style>
-    <script type="module" crossorigin src="./assets/index-D4t5dQMa.js"></script>
+    <script type="module" crossorigin src="./assets/index-6XViVyHv.js"></script>
   </head>
   <body>
     <canvas id="game"></canvas>
