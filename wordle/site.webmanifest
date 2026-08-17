@@ -1,0 +1,13 @@
+{
+  "name": "Wordle — jeez.games",
+  "short_name": "Wordle",
+  "description": "Wordle — guess the 5-letter word in 6 tries with 3D mesh tiles by jeez.games.",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#12121f",
+  "theme_color": "#12121f",
+  "icons": [
+    { "src": "./icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "./icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" }
+  ]
+}
