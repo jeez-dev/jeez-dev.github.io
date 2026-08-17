@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+    <meta name="theme-color" content="#0e1524" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <title>Grid Trails — Claim the Territory</title>
+    <style>
+      html, body { margin: 0; padding: 0; background: #0e1524; height: 100%; overflow: hidden; touch-action: none; }
+      #stage { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; background: #0e1524; }
+      #game-wrap { position: relative; width: 100%; height: 100%; }
+      canvas#game { display: block; width: 100%; height: 100%; touch-action: none; }
+      #hud { position: absolute; inset: 0; pointer-events: none; }
+      #hud > * { pointer-events: auto; }
+      #boot { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+        background: radial-gradient(120% 80% at 50% 30%, #1b2740 0%, #0e1524 65%); color: #8fb3ff; z-index: 20;
+        font: 600 18px/1.4 ui-monospace, Menlo, Consolas, monospace; }
+      .btn {
+        display: inline-flex; align-items: center; justify-content: center;
+        min-width: 44px; min-height: 44px; padding: 12px 22px;
+        border-radius: 12px; border: none; cursor: pointer;
+        font: 700 16px/1 system-ui, sans-serif; color: #fff;
+        background: linear-gradient(180deg, #4a7bff 0%, #2f55c8 100%);
+        box-shadow: 0 4px 14px rgba(47,85,200,.4);
+      }
+      .btn:active { transform: translateY(1px); }
+    </style>
+    <script type="module" crossorigin src="./assets/index-DieDtv9v.js"></script>
+  </head>
+  <body>
+    <div id="stage">
+      <div id="game-wrap">
+        <canvas id="game"></canvas>
+        <div id="hud"></div>
+        <div id="boot">Grid Trails</div>
+      </div>
+    </div>
+  </body>
+</html>
