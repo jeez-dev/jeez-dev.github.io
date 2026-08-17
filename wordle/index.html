@@ -124,6 +124,9 @@
 
       .keyboard {
         flex: 0 0 auto;
+        width: 100%;
+        max-width: 500px;
+        margin: 0 auto;
         padding: 6px 4px 12px;
         user-select: none;
         touch-action: manipulation;
@@ -131,12 +134,13 @@
       .kb-row {
         display: flex;
         justify-content: center;
-        gap: 5px;
+        gap: 3px;
         margin-bottom: 5px;
       }
       .kb-row button {
-        min-width: 44px;
+        min-width: 0;
         min-height: 44px;
+        height: 52px;
         border: none;
         border-radius: 6px;
         background: #3a3a52;
@@ -146,11 +150,10 @@
         font-family: inherit;
         cursor: pointer;
         flex: 1 1 0;
-        max-width: 56px;
+        max-width: none;
       }
       .kb-row button.kb-wide {
-        flex: 1.6 1 0;
-        max-width: 76px;
+        flex: 1.5 1 0;
         font-size: 12px;
       }
       .kb-row button:active {
@@ -240,13 +243,33 @@
       .card button.ghost {
         background: #2c2c46;
       }
+      .btn {
+        min-width: 44px;
+        min-height: 44px;
+        padding: 0 18px;
+        margin: 4px;
+        border: none;
+        border-radius: 10px;
+        font-size: 15px;
+        font-weight: 600;
+        font-family: inherit;
+        cursor: pointer;
+      }
+      .btn.primary {
+        background: #667eea;
+        color: #fff;
+      }
+      .btn.ghost {
+        background: #2c2c46;
+        color: #cfcfe0;
+      }
       .card p.stub {
         margin: 14px 0 0;
         font-size: 12px;
         color: #8890a8;
       }
     </style>
-    <script type="module" crossorigin src="./assets/index-OerAGfYE.js"></script>
+    <script type="module" crossorigin src="./assets/index-HRXgJssu.js"></script>
   </head>
   <body>
     <div id="app">
