@@ -1,0 +1,342 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+    <meta name="theme-color" content="#c79e69" />
+    <title>AFK Journey — Pre-Battle Formation (visual slice)</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet" />
+    <style>
+      :root {
+        /* Design-lock palette (JEE-630) — 390x844 logical canvas, @2x */
+        --sand-base: #c79e69;
+        --sand-hi: #dcb06e;
+        --sand-crest: #e3b470;
+        --sand-shadow: #9a6a48;
+        --sand-vignette: #4a3f35;
+        --hex-line: #835b37;
+        --hud-pill: rgba(90,75,64,.72);
+        --hud-text: #ffffff;
+        --hud-scrim: rgba(46,38,32,.45);
+        --gem-green: #43d675;
+        --gem-orange: #f79833;
+        --dl-green: #a8d982;
+        --crown-gold: #fedc85;
+        --enemy-red: #e2745c;
+        --enemy-red-hi: #e7777f;
+        --arrow-blue: #2d498f;
+        --banner-red: #cd3a33;
+        --emblem-green: #0f754e;
+        --emblem-mint: #9bf5d1;
+        --torch-flame: #ffd619;
+        --slime-cyan: #569b9c;
+        --panel-cream: #ece8dc;
+        --panel-cream-hi: #eeebe4;
+        --panel-cream-deep: #e7dcca;
+        --card-selected-border: #8cc474;
+        --card-selected-deep: #357a50;
+        --lvl-blue: #93a5e4;
+        --lvl-orange: #e8933a;
+        --battle-green: #6da865;
+        --ab-text: #4a3f35;
+        --funnel: #ffffff;
+      }
+      html, body {
+        margin: 0; padding: 0; height: 100%; background: #1a130e; overflow: hidden;
+        font-family: 'Nunito', 'Baloo 2', system-ui, -apple-system, sans-serif;
+        -webkit-user-select: none; user-select: none;
+        -webkit-tap-highlight-color: transparent;
+      }
+      #stage {
+        position: fixed; inset: 0; display: flex; align-items: center; justify-content: center;
+        background: #1a130e;
+      }
+      /* Portrait 390x844 logical stage, pillarboxed — midnight-dispatch-style uniform scale.
+         #stage flex-centers the 390x844 wrap; #game-wrap scales uniformly about its own
+         center by min(100vw/390, 100dvh/844) so the composition renders 1:1 at a 390x844
+         viewport and scales up/down uniformly (no distortion) anywhere else (JEE-594 fix). */
+      #game-wrap {
+        position: relative; overflow: hidden;
+        width: 390px; height: 844px;
+        transform-origin: center center;
+        transform: scale(min(calc(100vw / 390), calc(100dvh / 844)));
+      }
+      /* Design canvas 390x844 logical */
+      #board {
+        position: absolute; left: 0; top: 0;
+        width: 390px; height: 844px;
+        background: var(--sand-base);
+        overflow: hidden;
+      }
+      /* battlefield terrain */
+      #terrain {
+        position: absolute; left: 0; top: 0; width: 390px; height: 545px;
+        background:
+          radial-gradient(120% 90% at 50% 0%, rgba(227,180,112,.55), rgba(0,0,0,0) 60%),
+          radial-gradient(90% 70% at 20% 70%, rgba(154,106,72,.55), rgba(0,0,0,0) 70%),
+          radial-gradient(90% 60% at 80% 80%, rgba(220,176,110,.6), rgba(0,0,0,0) 65%),
+          linear-gradient(180deg, var(--sand-crest) 0%, var(--sand-hi) 28%, var(--sand-base) 60%, var(--sand-shadow) 100%);
+      }
+      #terrain::after {
+        content: ""; position: absolute; inset: 0;
+        background: radial-gradient(120% 60% at 50% 0%, rgba(46,38,32,.4), rgba(0,0,0,0) 60%);
+      }
+      /* light wash over battlefield player-half from clamp */
+      #hexgrid {
+        position: absolute; left: 0; top: 118px; width: 390px; height: 424px;
+        z-index: 2; pointer-events: none;
+      }
+      #hexgrid polygon.hexcell {
+        fill: none; stroke: var(--hex-line); stroke-width: 1.4; stroke-opacity: .5;
+      }
+      /* red aggro arcs + blue formation arrows */
+      #combat-lines { position: absolute; left: 0; top: 0; width: 390px; height: 545px; z-index: 3; pointer-events: none; }
+      /* Z1a HUD row (y0-33) */
+      #hud { position: absolute; left: 0; top: 0; width: 390px; height: 33px; z-index: 6;
+        background: linear-gradient(180deg, rgba(46,38,32,.5), rgba(46,38,32,.28) 60%, rgba(46,38,32,0));
+        display: flex; align-items: center; justify-content: space-between; padding: 0 7px; }
+      .counter { display: flex; align-items: center; gap: 3px; height: 26px; padding: 0 9px;
+        background: var(--hud-pill); border-radius: 999px; }
+      .counter img { height: 18px; width: 18px; object-fit: contain; }
+      .counter .val { color: var(--hud-text); font-weight: 800; font-size: 13px; letter-spacing: .3px;
+        font-variant-numeric: tabular-nums; }
+      #stage-title { display: flex; align-items: center; gap: 3px; color: var(--hud-text);
+        font-weight: 800; font-size: 14px; white-space: nowrap; }
+      #stage-title .info { width: 13px; height: 13px; border-radius: 50%;
+        border: 1.5px solid rgba(255,255,255,.85); position: relative; }
+      #stage-title .info::after { content: "i"; position: absolute; inset: 0;
+        font-size: 9px; font-weight: 900; display: flex; align-items: center; justify-content: center; }
+      /* Z1b circles row */
+      .circle { position: absolute; z-index: 6; width: 48px; height: 48px; border-radius: 50%;
+        display: flex; align-items: center; justify-content: center; }
+      #dl-circle { left: 24px; top: 63px; background: var(--dl-green); }
+      #crown-circle { right: 30px; top: 63px; background: var(--crown-gold); }
+      .circle img { width: 26px; height: 26px; object-fit: contain; }
+      #dl-circle img { width: 30px; height: 30px; }
+      /* battlefield units */
+      .unit { position: absolute; z-index: 4; pointer-events: none; }
+      #player-group { left: 70px; top: 318px; width: 155px; }
+      #enemy-group { left: 196px; top: 224px; width: 148px; }
+      #slime { left: 246px; top: 254px; width: 50px; }
+      #torch { left: 344px; top: 424px; width: 46px; }
+      /* Lvl tags: enemy (orange 40-41) above enemies, player (blue 51-60) below player */
+      .lvl { position: absolute; z-index: 5; height: 15px; padding: 0 6px; border-radius: 7px;
+        font-size: 10px; font-weight: 700; color: #fff; line-height: 15px; text-align: center; white-space: nowrap; }
+      .lvl.orange { background: var(--lvl-orange); }
+      .lvl.blue { background: var(--lvl-blue); }
+      #lvl-e1 { left: 238px; top: 216px; }  #lvl-e2 { left: 306px; top: 226px; }
+      #lvl-e3 { left: 248px; top: 236px; }  #lvl-e4 { left: 360px; top: 268px; }
+      #lvl-p1 { left: 92px; top: 472px; }   #lvl-p2 { left: 142px; top: 460px; }
+      #lvl-p3 { left: 192px; top: 478px; }  #lvl-p4 { left: 240px; top: 466px; }
+      #lvl-p5 { left: 158px; top: 496px; }  #lvl-p6 { left: 96px; top: 506px; }
+      #lvl-p7 { left: 200px; top: 500px; }
+      /* Z3 side rails */
+      #left-rail { position: absolute; z-index: 7; left: 0; top: 460px; width: 44px; height: 54px; overflow: hidden; }
+      #left-rail img { width: 44px; height: 54px; object-fit: cover; object-position: right center; }
+      #banner-badge { position: absolute; z-index: 8; left: 0; top: 470px; width: 30px; height: 30px;
+        border-radius: 50%; background: var(--emblem-green); color: var(--emblem-mint);
+        font-weight: 800; font-size: 11px; display: flex; align-items: center; justify-content: center; }
+      #right-rail { position: absolute; z-index: 8; right: 12px; top: 494px; display: flex; flex-direction: column; align-items: center; gap: 4px; }
+      #chat-bubble { background: #3a332b; color: #fff; font-weight: 800; font-size: 10px;
+        padding: 5px 8px; border-radius: 8px; position: relative; min-width: 26px; text-align: center; }
+      #chat-bubble::after { content: ""; position: absolute; left: 10px; top: 100%; border: 5px solid transparent;
+        border-top-color: #3a332b; }
+      #dots-btn { width: 24px; height: 24px; border-radius: 50%; background: #3a332b; display: flex;
+        flex-direction: column; align-items: center; justify-content: center; gap: 1px; }
+      #dots-btn i { width: 3px; height: 3px; border-radius: 50%; background: #fff; display: block; }
+      /* Z4 roster panel (cream) y535-735 */
+      #roster { position: absolute; left: 0; top: 535px; width: 390px; height: 200px;
+        background: linear-gradient(180deg, var(--panel-cream-deep), var(--panel-cream));
+        border-top: 1px solid #fffdf5;
+        box-shadow: 0 -2px 6px rgba(90,66,40,.12);
+        z-index: 9; }
+      #roster-title { display: none; }
+      .card { position: absolute; border-radius: 8px; overflow: hidden; background: #000;
+        box-sizing: border-box; border: 1px solid rgba(90,75,64,.25); }
+      .card img { width: 100%; height: 100%; object-fit: cover; display: block; }
+      .card .lk { position: absolute; left: 50%; transform: translateX(-50%); bottom: 0;
+        height: 13px; padding: 0 5px; border-radius: 6px; font-size: 9px; font-weight: 700; color: #fff; line-height: 13px; white-space: nowrap; }
+      .lk.blue { background: var(--lvl-blue); }
+      .card.selected { border: 3px solid var(--card-selected-border); background: var(--card-selected-deep); }
+      .card.selected::after { content: ""; position: absolute; top: 1px; right: 1px; width: 15px; height: 15px;
+        background: var(--card-selected-deep); border-radius: 50%; }
+      .card.selected::before { content: ""; position: absolute; top: 3px; right: 4px; width: 9px; height: 5px;
+        border-left: 2px solid #fff; border-bottom: 2px solid #fff; transform: rotate(-45deg); z-index: 2; }
+      #funnel { position: absolute; z-index: 10; right: 16px; top: 158px; width: 26px; height: 26px;
+        border-radius: 6px; background: #fff; box-shadow: 0 1px 3px rgba(74,63,53,.3);
+        display: flex; align-items: flex-end; justify-content: center; }
+      #funnel svg { width: 16px; height: 16px; }
+      /* Z5 action bar (y736-797) */
+      #actionbar { position: absolute; left: 0; top: 736px; width: 390px; height: 62px; z-index: 11;
+        background: linear-gradient(180deg, var(--panel-cream-hi), var(--panel-cream));
+        border-top: 1px solid rgba(90,75,64,.18);
+        display: flex; align-items: center; gap: 8px; padding: 0 12px; }
+      #back { display: flex; align-items: center; color: var(--ab-text); font-size: 22px; font-weight: 800; }
+      #autobattle { flex: 1; color: var(--ab-text); font-weight: 700; font-size: 13px; }
+      #battle { background: linear-gradient(180deg, #6da865, #5d9657); color: #fff; font-weight: 900;
+        font-size: 17px; padding: 12px 30px; border-radius: 10px;
+        box-shadow: inset 0 1px 0 rgba(255,255,255,.25), 0 2px 5px rgba(74,63,53,.3);
+        text-shadow: 0 1px 0 rgba(0,0,0,.18); }
+      /* Z6 system strip (safe-area) */
+      #system { position: absolute; left: 0; top: 798px; width: 390px; height: 46px;
+        background: var(--panel-cream); }
+    </style>
+  </head>
+  <body>
+    <div id="stage">
+      <div id="game-wrap">
+        <div id="board">
+          <div id="terrain"></div>
+
+          <svg id="hexgrid" viewBox="0 0 390 424" preserveAspectRatio="none">
+            SZG
+          </svg>
+
+          <svg id="combat-lines" viewBox="0 0 390 545" preserveAspectRatio="xMidYMid meet" fill="none">
+            <!-- red aggro arcs (enemy -> player) -->
+            <path d="M260 300 C 240 340, 215 360, 185 400" stroke="var(--enemy-red)" stroke-width="3.5" opacity=".85" stroke-linecap="round"/>
+            <path d="M320 300 C 300 345, 268 368, 235 415" stroke="var(--enemy-red)" stroke-width="3.5" opacity=".85" stroke-linecap="round"/>
+            <path d="M318 330 C 300 372, 270 392, 238 430" stroke="var(--enemy-red)" stroke-width="3.5" opacity=".85" stroke-linecap="round"/>
+            <path d="M300 380 C 285 405, 260 420, 232 448" stroke="var(--enemy-red)" stroke-width="3.5" opacity=".85" stroke-linecap="round"/>
+            <!-- blue formation arrows (player -> enemy) -->
+            <path d="M120 470 l 40 -46 l -10 2 l 22 -30 l -20 25 l 10 -3 l -40 40 z" fill="var(--arrow-blue)" opacity=".9"/>
+            <path d="M185 492 l 42 -64 l -10 3 l 22 -42 l -20 34 l 10 -4 l -48 58 z" fill="var(--arrow-blue)" opacity=".9"/>
+            <path d="M250 470 l 26 -52 l -10 3 l 16 -30 l -14 24 l 10 -4 l -30 54 z" fill="var(--arrow-blue)" opacity=".9"/>
+          </svg>
+
+          <!-- Z1a HUD -->
+          <div id="hud">
+            <div class="counter" id="cnt-green">
+              <img src="assets/gemicon-green.png" alt="" />
+              <span class="val">4017K</span>
+            </div>
+            <div id="stage-title">AFK Stage 62 <span class="info"></span></div>
+            <div class="counter" id="cnt-orange">
+              <img src="assets/gemicon-orange.png" alt="" />
+              <span class="val">2754K</span>
+            </div>
+          </div>
+
+          <!-- Z1b circles -->
+          <div class="circle" id="dl-circle"><img src="assets/download.png" alt="" /></div>
+          <div class="circle" id="crown-circle"><img src="assets/crown.png" alt="" /></div>
+
+          <!-- battlefield units -->
+          <img class="unit" id="enemy-group" src="assets/enemy-group.png" alt="" />
+          <img class="unit" id="slime" src="assets/slime.png" alt="" />
+          <img class="unit" id="player-group" src="assets/player-group.png" alt="" />
+          <img class="unit" id="torch" src="assets/torch.png" alt="" />
+
+          <!-- enemy Lvl tags (orange 40-41) -->
+          <div class="lvl orange" id="lvl-e1">Lvl 40</div>
+          <div class="lvl orange" id="lvl-e2">Lvl 41</div>
+          <div class="lvl orange" id="lvl-e3">Lvl 40</div>
+          <div class="lvl orange" id="lvl-e4">Lvl 41</div>
+
+          <!-- player Lvl tags (blue 51-60) -->
+          <div class="lvl blue" id="lvl-p1">Lvl 51</div>
+          <div class="lvl blue" id="lvl-p2">Lvl 59</div>
+          <div class="lvl blue" id="lvl-p3">Lvl 60</div>
+          <div class="lvl blue" id="lvl-p4">Lvl 55</div>
+          <div class="lvl blue" id="lvl-p5">Lvl 52</div>
+          <div class="lvl blue" id="lvl-p6">Lvl 53</div>
+          <div class="lvl blue" id="lvl-p7">Lvl 54</div>
+
+          <!-- Z3 side rails -->
+          <div id="left-rail"><img src="assets/banner.png" alt="" /></div>
+          <div id="banner-badge">+10</div>
+
+          <div id="right-rail">
+            <div id="chat-bubble">99</div>
+            <div id="dots-btn"><i></i><i></i><i></i></div>
+          </div>
+
+          <!-- Z4 roster -->
+          <div id="roster">
+            <div class="card selected" data-lvl="59" style="left:11px;top:16px;width:68px;height:74px;">
+              <img src="assets/top1.png" alt=""/><span class="lk blue">Lvl 59</span>
+            </div>
+            <div class="card selected" data-lvl="60" style="left:84px;top:16px;width:68px;height:74px;">
+              <img src="assets/top2.png" alt=""/><span class="lk blue">Lvl 60</span>
+            </div>
+            <div class="card selected" data-lvl="51" style="left:158px;top:16px;width:68px;height:74px;">
+              <img src="assets/top3.png" alt=""/><span class="lk blue">Lvl 51</span>
+            </div>
+            <div class="card selected" data-lvl="55" style="left:231px;top:16px;width:68px;height:74px;">
+              <img src="assets/top4.png" alt=""/><span class="lk blue">Lvl 55</span>
+            </div>
+            <div class="card selected" data-lvl="52" style="left:304px;top:16px;width:68px;height:74px;">
+              <img src="assets/top5.png" alt=""/><span class="lk blue">Lvl 52</span>
+            </div>
+            <!-- available cards: 2 rows x 3 = 6 -->
+            <div class="card" data-lvl="51" style="left:16px;top:100px;width:60px;height:52px;">
+              <img src="assets/bot1_1.png" alt=""/><span class="lk blue">Lvl 51</span>
+            </div>
+            <div class="card" data-lvl="51" style="left:82px;top:100px;width:60px;height:52px;">
+              <img src="assets/bot1_2.png" alt=""/><span class="lk blue">Lvl 51</span>
+            </div>
+            <div class="card" data-lvl="51" style="left:148px;top:100px;width:60px;height:52px;">
+              <img src="assets/bot1_3.png" alt=""/><span class="lk blue">Lvl 51</span>
+            </div>
+            <div class="card" data-lvl="51" style="left:16px;top:148px;width:60px;height:52px;">
+              <img src="assets/bot2_1.png" alt=""/><span class="lk blue">Lvl 51</span>
+            </div>
+            <div class="card" data-lvl="51" style="left:82px;top:148px;width:60px;height:52px;">
+              <img src="assets/bot2_2.png" alt=""/><span class="lk blue">Lvl 51</span>
+            </div>
+            <div class="card" data-lvl="51" style="left:148px;top:148px;width:60px;height:52px;">
+              <img src="assets/bot2_3.png" alt=""/><span class="lk blue">Lvl 51</span>
+            </div>
+
+            <div id="funnel">
+              <svg viewBox="0 0 24 24" fill="none"><path d="M3 4h18l-7 9v5l-4 2v-7L3 4z" fill="#4a3f35"/></svg>
+            </div>
+          </div>
+
+          <!-- Z5 action bar -->
+          <div id="actionbar">
+            <div id="back">&#8592;</div>
+            <div id="autobattle">Auto Battle</div>
+            <div id="battle">BATTLE</div>
+          </div>
+
+          <!-- Z6 system strip -->
+          <div id="system"></div>
+        </div>
+      </div>
+    </div>
+    <script>
+      (function () {
+        // inject hex grid polygons
+        var svg = document.getElementById('hexgrid');
+        var R = 30, SQUASH = 0.62, W = 390, yTop = 118, yBot = 538;
+        var verts = [];
+        for (var k = 0; k < 6; k++) { var a = k * Math.PI / 3; verts.push([Math.cos(a), Math.sin(a) * SQUASH]); }
+        var hx = 1.5 * R, hy = Math.sqrt(3) * R * SQUASH;
+        var parts = [];
+        var row = 0;
+        for (var cy = yTop + R / 2; cy < yBot; cy += hy) {
+          row++;
+          var off = (row % 2 === 0) ? hx / 2 : 0;
+          for (var cx = off; cx < W + hx; cx += hx) {
+            if (cx < 0) continue;
+            var pts = verts.map(function (v) { return (cx + v[0] * R).toFixed(1) + ',' + (cy + v[1] * R).toFixed(1); }).join(' ');
+            parts.push('<polygon points="' + pts + '" class="hexcell"/>');
+          }
+        }
+        svg.innerHTML = parts.join('');
+
+        // roster card toggle
+        var cards = document.querySelectorAll('.card');
+        cards.forEach(function (c) {
+          c.addEventListener('click', function (e) {
+            e.stopPropagation();
+            c.classList.toggle('selected');
+          });
+        });
+      })();
+    </script>
+  </body>
+</html>
