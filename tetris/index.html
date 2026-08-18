@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+    <meta name="theme-color" content="#0d1321" />
+    <title>Block Drop — Tetris-style</title>
+    <style>
+      html, body { margin: 0; padding: 0; background: #0d1321; height: 100%; overflow: hidden;
+        font-family: ui-monospace, Menlo, Consolas, monospace; -webkit-tap-highlight-color: transparent; }
+
+      #stage { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; background: #0d1321; }
+
+      /* Portrait 9:16 logic stage, pillarboxed on desktop (mirrors fleet games). */
+      #game-wrap { position: relative; aspect-ratio: 9/16;
+        width: min(100%, calc(100vh * 9 / 16)); height: min(100%, calc(100vw * 16 / 9));
+        width: min(100%, calc(100dvh * 9 / 16)); height: min(100%, calc(100dvw * 16 / 9)); }
+
+      canvas#game { display: block; width: 100%; height: 100%; }
+
+      #hud { position: absolute; inset: 0; pointer-events: none; }
+      #hud > * { pointer-events: auto; }
+
+      #boot { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+        background: radial-gradient(120% 80% at 50% 30%, #1a2540 0%, #0d1321 60%); color: #5f78b8; z-index: 20;
+        font: 600 16px/1.3 ui-monospace, Menlo, Consolas, monospace; }
+
+      .hud-top { position: absolute; top: 10px; left: 0; right: 0; display: flex; justify-content: center;
+        gap: 14px; pointer-events: none; font-variant-numeric: tabular-nums; }
+      .stat { background: rgba(10, 14, 26, 0.72); border: 1px solid #2b3a63; border-radius: 8px;
+        padding: 6px 12px; text-align: center; min-width: 66px; }
+      .stat .k { display: block; font-size: 10px; letter-spacing: 1px; color: #7b96d8; }
+      .stat .value { display: block; font-size: 20px; color: #eaf1ff; }
+
+      .hud-side { position: absolute; right: 8px; color: #7b96d8; font-size: 11px; letter-spacing: 1px; pointer-events: none; }
+      .side-hold { top: 14%; }
+      .side-next { top: 26%; }
+
+      .controls { position: absolute; left: 0; right: 0; bottom: 12px; display: grid;
+        grid-template-columns: repeat(6, 1fr); gap: 6px; padding: 0 10px; pointer-events: none; }
+      .controls .ctl { pointer-events: auto; height: 44px; border-radius: 10px; border: 1px solid #2b3a63;
+        background: rgba(20, 30, 58, 0.86); color: #d7e2ff; font-size: 20px; font-weight: 700;
+        touch-action: manipulation; user-select: none; -webkit-user-select: none; display: flex;
+        align-items: center; justify-content: center; }
+      .controls .ctl:active { background: #2b3a63; }
+
+      .monet-notice { position: absolute; left: 0; right: 0; bottom: 62px; text-align: center;
+        color: #5f78b8; font-size: 10px; letter-spacing: 0.4px; pointer-events: none; }
+
+      .overlay { position: absolute; inset: 0; background: rgba(8, 11, 20, 0.78); display: flex;
+        align-items: center; justify-content: center; z-index: 10; }
+      .overlay.hidden { display: none; }
+      .overlay-card { text-align: center; padding: 26px 20px; border: 1px solid #2b3a63; border-radius: 14px;
+        background: rgba(16, 22, 40, 0.94); max-width: 82%; }
+      .overlay-title { font-size: 26px; letter-spacing: 4px; color: #eaf1ff; margin-bottom: 12px; font-weight: 800; }
+      .overlay-body { color: #9bb0e6; font-size: 13px; line-height: 1.5; margin-bottom: 18px; }
+      .btn-primary { height: 44px; min-width: 120px; padding: 0 20px; border-radius: 10px; border: none;
+        background: #3d6bff; color: #fff; font-size: 15px; font-weight: 700; letter-spacing: 2px; cursor: pointer; }
+      .btn-primary:active { background: #3560e8; }
+    </style>
+    <script type="module" crossorigin src="./assets/index-ClEZpg7J.js"></script>
+  </head>
+  <body>
+    <div id="stage">
+      <div id="game-wrap">
+        <canvas id="game"></canvas>
+        <div id="hud"></div>
+        <div id="boot">Block Drop · Tetris-style</div>
+      </div>
+    </div>
+  </body>
+</html>
