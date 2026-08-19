@@ -3,7 +3,14 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Scrapyard Keeper — Ch1 greybox</title>
+    <!-- JEE-682: no chapter/milestone label in the shell — it only goes stale. -->
+    <title>Scrapyard Keeper</title>
+    <meta name="description" content="A web-first salvage keeper sim. Sort the yard, learn the trade." />
+    <meta property="og:title" content="Scrapyard Keeper" />
+    <meta
+      property="og:description"
+      content="A web-first salvage keeper sim. Sort the yard, learn the trade."
+    />
     <style>
       html, body { margin: 0; padding: 0; background: #0b0e10; height: 100%; overflow: hidden; }
       canvas { display: block; width: 100vw; height: 100vh; image-rendering: pixelated; }
@@ -14,9 +21,11 @@
       }
     </style>
     <script type="module" crossorigin src="./assets/index-CASebLCx.js"></script>
+    <meta name="build-commit" content="0ce636d4da83c6c2cc5d907a36261b22b4f98074">
+    <meta name="build-ref" content="main">
   </head>
   <body>
     <canvas id="game"></canvas>
-    <div id="boot-note">scrapyard-keeper · ch1 greybox · 60Hz fixed-step · WASD/LS move · E/X interact</div>
+    <div id="boot-note">scrapyard-keeper · 60Hz fixed-step · WASD/LS move · E/X interact</div>
   </body>
 </html>
