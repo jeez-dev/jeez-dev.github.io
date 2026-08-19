@@ -1,6 +1,6 @@
 {
-  "commit": "4d91b30c3d9b54f9f262e086af1d9e1f4776194d",
-  "ref": "main",
-  "builtAt": "2026-08-19T22:51:47.320Z",
-  "workflowRunId": "32310493244"
+  "commit": "8f5941ffe8b718e001e5106f9473e4e97fe48d1d",
+  "ref": "fix/jee-775-deploy-self-hosted",
+  "builtAt": "2026-08-19T23:44:18.995Z",
+  "workflowRunId": "32314468850"
 }
