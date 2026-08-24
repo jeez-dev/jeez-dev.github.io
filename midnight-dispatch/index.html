@@ -4,32 +4,31 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
     <meta name="theme-color" content="#17233F" />
-    <title>Midnight Dispatch — The Districts Begin to Answer</title>
+    <title>Midnight Dispatch — Hold to Sort</title>
     <style>
-      html, body { margin: 0; padding: 0; background: #17233F; height: 100%; overflow: hidden; }
-      #stage { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; background: #17233F; }
-      /* Portrait 9:16 logic stage, pillarboxed on desktop, letterboxed on tall phones.
-         Dual min() sizing: never wider than the viewport OR taller than 16/9 of the
-         viewport width (JEE-594 — the old height:100%+aspect-ratio path overflowed
-         sides by 58px at 390w, and the 3/5 media query made it worse). */
-      #game-wrap { position: relative; aspect-ratio: 9/16;
+      html, body { margin: 0; padding: 0; background: #17233F; height: 100%; overflow: hidden;
+        font-family: Georgia, 'Times New Roman', serif; -webkit-tap-highlight-color: transparent; }
+      * { box-sizing: border-box; }
+      #stage { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; background: #0e1830; }
+      /* Portrait 9:16 logic stage, pillarboxed on desktop, letterboxed on tall phones (JEE-594 pattern). */
+      #game-wrap { position: relative; aspect-ratio: 9/16; overflow: hidden; background: #17233F;
         width: min(100%, calc(100vh * 9 / 16)); height: min(100%, calc(100vw * 16 / 9));
         width: min(100%, calc(100dvh * 9 / 16)); height: min(100%, calc(100dvw * 16 / 9)); }
-      canvas#game { display: block; width: 100%; height: 100%; }
-      #hud { position: absolute; inset: 0; pointer-events: none; }
-      #hud > * { pointer-events: auto; }
+      canvas#letters { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+      #hud { position: absolute; inset: 0; display: flex; flex-direction: column; user-select: none; }
       #boot { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
-        background: radial-gradient(120% 80% at 50% 30%, #24365c 0%, #17233F 60%); color: #5B79C8; z-index: 20;
-        font: 600 16px/1.3 ui-monospace, Menlo, Consolas, monospace; }
+        background: radial-gradient(120% 80% at 50% 30%, #24365c 0%, #17233F 60%); color: #5B79C8; z-index: 30;
+        font: 600 15px/1.3 ui-monospace, Menlo, Consolas, monospace; text-align: center; padding: 24px; }
     </style>
-    <script type="module" crossorigin src="./assets/index-BrIIDRaq.js"></script>
+    <script type="module" crossorigin src="./assets/index-Bv6wA8TB.js"></script>
+    <link rel="stylesheet" crossorigin href="./assets/index-kM45eqeb.css">
   </head>
   <body>
     <div id="stage">
       <div id="game-wrap">
-        <canvas id="game"></canvas>
+        <canvas id="letters"></canvas>
         <div id="hud"></div>
-        <div id="boot">Midnight Dispatch · The Districts Begin to Answer</div>
+        <div id="boot">Midnight Dispatch<br />the sorting hall is waking up&hellip;</div>
       </div>
     </div>
   </body>
