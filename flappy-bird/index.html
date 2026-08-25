@@ -34,10 +34,16 @@
       font-display: swap;
     }
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    html, body { width: 100%; height: 100%; overflow: hidden; background: #3fa9d0; }
-    body { font-family: 'Nunito', system-ui, sans-serif; -webkit-user-select: none; user-select: none; overscroll-behavior: none; }
+    html, body { width: 100%; height: 100%; overflow: hidden; background: #3fa9d0;
+                 overscroll-behavior: none; -webkit-tap-highlight-color: transparent;
+                 -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; }
+    body { font-family: 'Nunito', system-ui, sans-serif;
+           /* Pin the document so iOS Safari cannot rubber-band or pull-to-refresh
+              (overscroll-behavior alone is not honored before iOS 16). */
+           position: fixed; inset: 0; }
     #game-container { position: fixed; inset: 0; display: flex; justify-content: center; align-items: center; touch-action: none; }
     canvas { display: block; }
+    img, canvas { -webkit-user-drag: none; }
     /* Boot splash (JEE-224) — paints before the game bundle executes;
        removed on the first rendered frame by src/main.js. */
     #boot {
@@ -214,7 +220,7 @@
     }
   </style>
   <title>Flappy Bird — jeez.games</title>
-  <script type="module" crossorigin src="./assets/index-CJLCiPh4.js"></script>
+  <script type="module" crossorigin src="./assets/index-DC6dsVoe.js"></script>
 </head>
 <body>
   <div id="boot" aria-hidden="true">
