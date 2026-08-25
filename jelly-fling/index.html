@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
     <meta name="theme-color" content="#141033" />
     <meta name="mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -130,11 +130,19 @@
         -webkit-tap-highlight-color: transparent;
         -webkit-user-select: none;
         user-select: none;
+        -webkit-touch-callout: none;
+      }
+      body {
+        /* Pin the document so iOS Safari cannot rubber-band or pull-to-refresh
+           (overscroll-behavior alone is not honored before iOS 16). */
+        position: fixed;
+        inset: 0;
       }
       #app {
         position: relative;
         width: 100%;
         height: 100%;
+        touch-action: none;
       }
       #app canvas {
         display: block;
@@ -142,8 +150,12 @@
         position: absolute;
         inset: 0;
       }
+      img,
+      canvas {
+        -webkit-user-drag: none;
+      }
     </style>
-    <script type="module" crossorigin src="./assets/index-hsiJW17b.js"></script>
+    <script type="module" crossorigin src="./assets/index-IWTw11V5.js"></script>
     <link rel="stylesheet" crossorigin href="./assets/index-jd6gaWGB.css">
   </head>
   <body>
