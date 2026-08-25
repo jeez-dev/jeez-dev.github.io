@@ -2,7 +2,10 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"
+    />
     <!-- JEE-682: no chapter/milestone label in the shell — it only goes stale. -->
     <title>Scrapyard Keeper</title>
     <meta name="description" content="A web-first salvage keeper sim. Sort the yard, learn the trade." />
@@ -12,16 +15,48 @@
       content="A web-first salvage keeper sim. Sort the yard, learn the trade."
     />
     <style>
-      html, body { margin: 0; padding: 0; background: #0b0e10; height: 100%; overflow: hidden; }
-      canvas { display: block; width: 100vw; height: 100vh; image-rendering: pixelated; }
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        background: #0b0e10;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        overscroll-behavior: none;
+        /* JEE-900: no text selection, no iOS long-press callout, tap-highlight off. */
+        -webkit-user-select: none;
+        user-select: none;
+        -webkit-touch-callout: none;
+      }
+      /* Pin the document so iOS Safari cannot rubber-band or pull-to-refresh
+         (overscroll-behavior alone is not honored before iOS 16). */
+      body {
+        position: fixed;
+        inset: 0;
+        -webkit-tap-highlight-color: transparent;
+      }
+      canvas {
+        display: block;
+        width: 100vw;
+        height: 100vh;
+        image-rendering: pixelated;
+        touch-action: none;
+      }
+      img,
+      canvas {
+        -webkit-user-drag: none;
+      }
       /* Keep the build note clear of the two-line gameplay HUD. */
       #boot-note {
         position: fixed; inset: auto 8px 70px auto; text-align: right; color: #4a5560;
         font: 16px/1.2 ui-monospace, Menlo, Consolas, monospace; pointer-events: none;
+        -webkit-user-select: none;
+        user-select: none;
       }
     </style>
-    <script type="module" crossorigin src="./assets/index-4gUMkRwx.js"></script>
-    <meta name="build-commit" content="700aa0759e5ccf70f9de37765fd11bc75ade0693">
+    <script type="module" crossorigin src="./assets/index-imp56qZr.js"></script>
+    <meta name="build-commit" content="cc2bea3477a094b7550ca00856b377393f15766c">
     <meta name="build-ref" content="main">
   </head>
   <body>
