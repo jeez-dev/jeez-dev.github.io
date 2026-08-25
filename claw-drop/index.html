@@ -61,6 +61,14 @@
         background: #140e2e;
         overscroll-behavior: none;
         -webkit-tap-highlight-color: transparent;
+        -webkit-user-select: none;
+        user-select: none;
+        -webkit-touch-callout: none;
+      }
+      /* Pin the document so iOS Safari cannot rubber-band or pull-to-refresh. */
+      body {
+        position: fixed;
+        inset: 0;
       }
       #app {
         position: relative;
@@ -72,6 +80,10 @@
         touch-action: none;
         position: absolute;
         inset: 0;
+      }
+      img,
+      canvas {
+        -webkit-user-drag: none;
       }
       /* Boot splash — removed on the first rendered frame by main.ts (Water Sort pattern). */
       #boot {
@@ -151,7 +163,7 @@
         }
       }
     </style>
-    <script type="module" crossorigin src="./assets/index-CFY7mv_N.js"></script>
+    <script type="module" crossorigin src="./assets/index-DSdaLGB3.js"></script>
     <link rel="stylesheet" crossorigin href="./assets/index-RB0IoQLU.css">
   </head>
   <body>
