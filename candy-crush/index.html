@@ -2,12 +2,42 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
     <meta name="theme-color" content="#17102b" />
     <meta name="description" content="Sugar Circuit — a mesh-first match-three puzzle by jeez.games" />
     <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
     <title>Sugar Circuit</title>
-    <script type="module" crossorigin src="./assets/index-CndA7HiH.js"></script>
+    <style>
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        background: #17102b;
+        overscroll-behavior: none;
+        -webkit-tap-highlight-color: transparent;
+        -webkit-user-select: none;
+        user-select: none;
+        -webkit-touch-callout: none;
+      }
+      /* Pin the document so iOS Safari cannot rubber-band or pull-to-refresh. */
+      body {
+        position: fixed;
+        inset: 0;
+      }
+      #app {
+        position: relative;
+        width: 100%;
+        height: 100%;
+      }
+      #app canvas,
+      canvas {
+        -webkit-user-drag: none;
+      }
+    </style>
+    <script type="module" crossorigin src="./assets/index-BrpW6Lft.js"></script>
     <link rel="modulepreload" crossorigin href="./assets/three-DGJIU0vl.js">
     <link rel="stylesheet" crossorigin href="./assets/index-WqOZGs0E.css">
   </head>
