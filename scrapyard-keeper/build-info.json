@@ -1,6 +1,6 @@
 {
-  "commit": "a360d8a6e57562671b988ce48fc81575cafa8215",
-  "ref": "main",
-  "builtAt": "2026-08-25T13:08:48.007Z",
-  "workflowRunId": "32851538181"
+  "commit": "ecb559c275cb2589120b5ff2369b5ee16fdd80a9",
+  "ref": "rollback/jee-824-ecb559c2",
+  "builtAt": "2026-08-25T13:11:40.363Z",
+  "workflowRunId": "32851815715"
 }
