@@ -2,12 +2,17 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
     <meta name="theme-color" content="#2a1f3d" />
     <title>Catris — Cat Fit Puzzle</title>
     <style>
       html, body { margin: 0; padding: 0; background: #2a1f3d; height: 100%; overflow: hidden;
-        font-family: ui-rounded, "SF Pro Rounded", system-ui, sans-serif; -webkit-tap-highlight-color: transparent; }
+        overscroll-behavior: none; -webkit-tap-highlight-color: transparent;
+        -webkit-user-select: none; user-select: none; -webkit-touch-callout: none;
+        font-family: ui-rounded, "SF Pro Rounded", system-ui, sans-serif; }
+      /* Pin the document so iOS Safari cannot rubber-band or pull-to-refresh. */
+      body { position: fixed; inset: 0; }
+      img, canvas { -webkit-user-drag: none; }
 
       #stage { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; background: #2a1f3d; }
 
@@ -66,7 +71,7 @@
       #stuck-banner button { margin-top: 6px; margin-inline: 4px; height: 32px; padding: 0 12px; border-radius: 8px;
         border: 1px solid #ff7ab8; background: rgba(255, 122, 184, 0.24); color: #fff1ff; font-weight: 700; }
     </style>
-    <script type="module" crossorigin src="./assets/index-QayeC1bo.js"></script>
+    <script type="module" crossorigin src="./assets/index-DJ2qTpCq.js"></script>
   </head>
   <body>
     <div id="stage">
