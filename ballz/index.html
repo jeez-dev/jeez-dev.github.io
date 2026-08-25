@@ -8,7 +8,41 @@
     />
     <meta name="theme-color" content="#141a2e" />
     <title>Ballz — jeez.games</title>
-    <script type="module" crossorigin src="./assets/index-DOTDpbAO.js"></script>
+    <style>
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        background: #141a2e;
+        overscroll-behavior: none;
+        -webkit-tap-highlight-color: transparent;
+        -webkit-user-select: none;
+        user-select: none;
+        -webkit-touch-callout: none;
+      }
+      /* Pin the document so iOS Safari cannot rubber-band or pull-to-refresh. */
+      body {
+        position: fixed;
+        inset: 0;
+      }
+      #app {
+        position: relative;
+        width: 100%;
+        height: 100%;
+      }
+      #app canvas {
+        display: block;
+        touch-action: none;
+      }
+      img,
+      canvas {
+        -webkit-user-drag: none;
+      }
+    </style>
+    <script type="module" crossorigin src="./assets/index-BXsDw0yf.js"></script>
     <link rel="stylesheet" crossorigin href="./assets/index-Be__trVz.css">
   </head>
   <body>
