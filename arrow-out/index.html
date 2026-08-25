@@ -26,6 +26,18 @@
         background: #121021;
         overscroll-behavior: none;
         -webkit-tap-highlight-color: transparent;
+        -webkit-user-select: none;
+        user-select: none;
+        -webkit-touch-callout: none;
+      }
+      /* Pin the document so iOS Safari cannot rubber-band or pull-to-refresh. */
+      body {
+        position: fixed;
+        inset: 0;
+      }
+      img,
+      canvas {
+        -webkit-user-drag: none;
       }
       #app {
         position: relative;
@@ -82,7 +94,7 @@
         }
       }
     </style>
-    <script type="module" crossorigin src="./assets/index-LLzfkf5n.js"></script>
+    <script type="module" crossorigin src="./assets/index-Cu-nDdQF.js"></script>
     <link rel="stylesheet" crossorigin href="./assets/index-BrRaJvdC.css">
   </head>
   <body>
