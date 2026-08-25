@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta
       name="viewport"
-      content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"
     />
     <meta name="theme-color" content="#12101f" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -16,9 +16,23 @@
         margin: 0;
         padding: 0;
         background: #12101f;
+        width: 100%;
         height: 100%;
         overflow: hidden;
         touch-action: none;
+        overscroll-behavior: none;
+        -webkit-tap-highlight-color: transparent;
+        -webkit-user-select: none;
+        user-select: none;
+        -webkit-touch-callout: none;
+      }
+      body {
+        position: fixed;
+        inset: 0;
+      }
+      img,
+      canvas {
+        -webkit-user-drag: none;
       }
       #stage {
         position: fixed;
@@ -83,7 +97,7 @@
         transform: translateY(1px);
       }
     </style>
-    <script type="module" crossorigin src="./assets/index-IXefKwsL.js"></script>
+    <script type="module" crossorigin src="./assets/index-DhX2dXYK.js"></script>
   </head>
   <body>
     <div id="stage">
