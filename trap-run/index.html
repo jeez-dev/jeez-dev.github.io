@@ -2,21 +2,22 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover, user-scalable=no" />
     <title>Trap Run</title>
     <meta name="description" content="Trap Run — a 15-room troll/trap platformer prototype. Run, jump, don't trust the floor." />
     <meta property="og:title" content="Trap Run" />
     <meta property="og:description" content="A 15-room troll/trap platformer prototype." />
     <style>
       html, body {
-        margin: 0; padding: 0; background: #0e1116; height: 100%; overflow: hidden;
-        -webkit-user-select: none; user-select: none; touch-action: none;
+        margin: 0; padding: 0; background: #0e1116; height: 100%; width: 100%; overflow: hidden;
+        overscroll-behavior: none; position: fixed; inset: 0; -webkit-tap-highlight-color: transparent;
+        -webkit-user-select: none; user-select: none; -webkit-touch-callout: none;
       }
-      #game { display: block; width: 100vw; height: 100vh; image-rendering: pixelated; }
+      #game { display: block; width: 100vw; height: 100vh; image-rendering: pixelated; touch-action: none; -webkit-user-drag: none; }
       #app { position: fixed; inset: 0; }
     </style>
-    <script type="module" crossorigin src="./assets/index-DySZ_CWR.js"></script>
-    <meta name="build-commit" content="786995d2625a0d8efb4603c10628493641fa95d6">
+    <script type="module" crossorigin src="./assets/index-B2vbebYe.js"></script>
+    <meta name="build-commit" content="a61b0cb496797c10542079e52b1b6813f9834443">
     <meta name="build-ref" content="main">
   </head>
   <body>
