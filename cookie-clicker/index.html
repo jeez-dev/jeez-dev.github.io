@@ -40,13 +40,16 @@
       src: url('fonts/nunito-800.woff2') format('woff2');
     }
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    html, body { width: 100%; height: 100%; overflow: hidden; background: #241610; }
+    html, body { width: 100%; height: 100%; overflow: hidden; overscroll-behavior: none; background: #241610; }
     body {
       font-family: 'Nunito', system-ui, sans-serif;
       color: #ffe9c9;
+      position: fixed; inset: 0;
       -webkit-user-select: none; user-select: none;
+      -webkit-touch-callout: none;
       -webkit-tap-highlight-color: transparent;
     }
+    img, canvas { -webkit-user-drag: none; }
     .hidden { display: none !important; }
 
     /* Boot splash (fleet template, JEE-217) — painted from raw HTML/CSS before
@@ -243,7 +246,7 @@
       #per-tap-badge { bottom: 8px; }
     }
   </style>
-  <script type="module" crossorigin src="./assets/index-BYLBzBL8.js"></script>
+  <script type="module" crossorigin src="./assets/index-CD3a97ce.js"></script>
 </head>
 <body>
   <!-- Boot splash (JEE-217): inline SVG + CSS only, no JS — removed by main.ts on first rendered frame. -->
