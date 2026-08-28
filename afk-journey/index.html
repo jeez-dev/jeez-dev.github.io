@@ -313,6 +313,38 @@
     </div>
     <script>
       (function () {
+        // ===== JEE-1008: iOS history edge-swipe guard =====
+        // On iPhone a horizontal swipe beginning near the screen edge is claimed by
+        // the browser as history back/forward and yanks the player off the page.
+        // `overscroll-behavior` / `touch-action` do not cover it — the only signal
+        // WebKit honors is preventDefault() on the touchstart whose first touch lands
+        // in the edge zone, from a non-passive listener. Ported from scrapyard-keeper
+        // PR #122 (src/web/edge-swipe-guard.ts).
+        var EDGE_GUARD_PX = 32;
+
+        // True when any touch of the event starts inside a horizontal edge zone.
+        // Uses clientX (CSS px) vs the viewport width, exactly like the reference.
+        function touchesEdge(e, win, edgePx) {
+          edgePx = edgePx || EDGE_GUARD_PX;
+          for (var i = 0; i < e.touches.length; i++) {
+            var x = e.touches[i].clientX;
+            if (x <= edgePx || x >= win.innerWidth - edgePx) return true;
+          }
+          return false;
+        }
+
+        // Install the guard: capture-phase + passive:false so it runs before anything
+        // else and is allowed to cancel. Never calls stopPropagation — game listeners
+        // still observe the event.
+        function installEdgeSwipeGuard(target, win, edgePx) {
+          target.addEventListener('touchstart', function (e) {
+            if (touchesEdge(e, win, edgePx)) e.preventDefault();
+          }, { passive: false, capture: true });
+        }
+
+        installEdgeSwipeGuard(document, window, EDGE_GUARD_PX);
+        // ===== end JEE-1008 guard =====
+
         // Mobile-browser guards (JEE-893): no page scroll/zoom/selection during play.
         var surface = document.getElementById('stage');
         if (surface) {
@@ -345,10 +377,15 @@
         }
         svg.innerHTML = parts.join('');
 
-        // roster card toggle
+        // roster card toggle — driven by pointer events, NOT click. The JEE-1008
+        // edge guard preventDefaults touchstart in the 32px edge zone, which the
+        // browser translates into suppressed click synthesis; the left/rightmost
+        // cards reach into that zone. pointerdown dispatches independently of
+        // touch defaults (and before touchstart), so card selection survives edge
+        // taps. pointerdown also covers mouse, so no desktop toggle is lost.
         var cards = document.querySelectorAll('.card');
         cards.forEach(function (c) {
-          c.addEventListener('click', function (e) {
+          c.addEventListener('pointerdown', function (e) {
             e.stopPropagation();
             c.classList.toggle('selected');
           });
